@@ -1,0 +1,11 @@
+me = double(matrice_erosa_c);
+a(:,:) = me(5,:,:);
+ed = bwmorph(a,'remove');
+sk = bwmorph(a,'skel',Inf);
+ep = bwmorph(sk,'endpoints');
+cn = bwmorph(sk,'branchpoints');
+skp = sk + ep + 2*cn;
+lb = bwlabel(a);
+imagesc(ed); 
+figure; imagesc (skp);
+figure; imagesc (lb);

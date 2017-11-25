@@ -44,21 +44,25 @@ for i=1:R_max
         
             if  yc+dy>=1 && yc+dy<=dim && zc+dz>=1 && zc+dz<=dim && (mesh_modificata(xc,yc+dy,zc+dz) == ID_trabecola) % || mesh_modificata(xc,yc+dy,zc+dz) == ID_trabecola+1)
                 logical=0;
+                mesh_modificata(xc,yc+dy,zc+dz)=100;
                 break
             end
             
             if  yc+dz>=1 && yc+dz<=dim && zc+dy>=1 && zc+dy<=dim && (mesh_modificata(xc,yc+dz,zc+dy) == ID_trabecola) % || mesh_modificata(xc,yc+dz,zc+dy) == ID_trabecola+1)
                 logical=0;
+                mesh_modificata(xc,yc+dz,zc+dy)=150;
                 break
             end
             
             if  yc-dy>=1 && yc-dy<=dim && zc+dz>=1 && zc+dz<=dim && (mesh_modificata(xc,yc-dy,zc+dz) == ID_trabecola) % || mesh_modificata(xc,yc-dy,zc+dz) == ID_trabecola+1)
                 logical=0;
+                mesh_modificata(xc,yc-dy,zc+dz)=50;
                 break
             end
             
             if  yc-dz>=1 && yc-dz<=dim && zc+dy>=1 && zc+dy<=dim && (mesh_modificata(xc,yc-dz,zc+dy) == ID_trabecola) % || mesh_modificata(xc,yc-dz,zc+dy) == ID_trabecola+1)
                 logical=0;
+                mesh_modificata(xc,yc-dz,zc+dy)=25;
                 break
             end
             
@@ -69,16 +73,19 @@ for i=1:R_max
             
             if  yc-dz>=1 && yc-dz<=dim && zc-dy>=1 && zc-dy<=dim && (mesh_modificata(xc,yc-dz,zc-dy) == ID_trabecola) % || mesh_modificata(xc,yc-dz,zc-dy) == ID_trabecola+1)
                 logical=0;
+                mesh_modificata(xc,yc-dz,zc-dy)=75;
                 break
             end
             
             if  yc+dy>=1 && yc+dy<=dim && zc-dz>=1 && zc-dz<=dim && (mesh_modificata(xc,yc+dy,zc-dz) == ID_trabecola) % || mesh_modificata(xc,yc+dy,zc-dz) == ID_trabecola+1)
                 logical=0;
+                mesh_modificata(xc,yc+dy,zc-dz)=125;
                 break
             end
             
             if  yc+dz>=1 && yc+dz<=dim && zc-dy>=1 && zc-dy<=dim && (mesh_modificata(xc,yc+dz,zc-dy) == ID_trabecola) %  || mesh_modificata(xc,yc+dz,zc-dy) == ID_trabecola+1)
                 logical=0;
+                mesh_modificata(xc,yc+dz,zc-dy)=175;
                 break
             end
                      

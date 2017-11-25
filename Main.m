@@ -10,25 +10,32 @@ load('mesh.mat'); %carica la mesh elaborata e compressa dal codice precedente
 
 
 
-numero_cricche = 10000; %numero cricche da collocare
+numero_cricche = 1000; %numero cricche da collocare
 Cicli_iniziali = 0;
 
 mesh_iniziale = matrice_compressa; 
 mesh_modificata = Ricerca_bordi(mesh_iniziale);
 matrice_cricche = Crea_cricche(numero_cricche);
-a(:,:) = mesh_modificata(8,:,:);
-figure; imagesc(a)
+a(:,:) = mesh_modificata(108,:,:);
+figure; imagesc(a);
+%%
+
+k=unique(matrice_cricche(:,1));
+k=k';
+for i=k
+    mat(:,:) = mesh_modificata(i,:,:);
+    mesh_modificata(i,:,:) = bwlabel(mat);
+end
 
 for i=1:size(matrice_cricche,1)
     
     x = matrice_cricche(i,1);
     y = matrice_cricche(i,2);
     z = matrice_cricche(i,3);
-    mat(:,:) = mesh_modificata(x,:,:);
-    mesh_modificata(x,:,:) = bwlabel(mat);
     matrice_cricche(i,6) = dim_voxel*Spessore(matrice_cricche(i,:),mesh_modificata(x,y,z));
 end
-
+%problema: più di una cricca
+ %%
 [matrice_cricche_modificata,Cicli_finali,numero_cricca] = Paris (matrice_cricche,Cicli_iniziali);
 
 for i=1:size(matrice_cricche_modificata,1)
