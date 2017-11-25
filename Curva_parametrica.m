@@ -7,15 +7,15 @@ global mesh_modificata
 conn=0;
 n=10; %parametro di progetto
 xc=coord_cricca(1);
-coordinates= [coord_cricca(2); coord_cricca(3)]; %inizializzazione variabile
+coordinates= [coord_cricca(2) coord_cricca(3)]; %inizializzazione variabile
 
-while size(coordinates,2)<=n %condizione di terminazione coincide con aver trovato le coordinate di n punti del contorno centrati in coord_cricca
+while size(coordinates,1)<=n %condizione di terminazione coincide con aver trovato le coordinate di n punti del contorno centrati in coord_cricca
 
-    for i=(size(coordinates,2)-conn):size(coordinates,2) %evita di ripetere operazioni inutili
+    for i=(size(coordinates,1)-conn):size(coordinates,1) %evita di ripetere operazioni inutili
 
         conn=0;
-        yc=coordinates(1,i);
-        zc=coordinates(2,i);
+        yc=coordinates(i,1);
+        zc=coordinates(i,2);
         
         if max([yc-1 yc+1 zc-1 zc+1]) <= size(mesh_modificata,1) && min([yc-1 yc+1 zc-1 zc+1]) >= 1
             near(:,:)=mesh_modificata(xc,yc-1:yc+1,zc-1:zc+1);
@@ -24,17 +24,14 @@ while size(coordinates,2)<=n %condizione di terminazione coincide con aver trova
             z = z + zc - 2;
             l=length(y);
 
-            log2=[];
-
-
             for j=1:l
-                log = ([y(i);z(i)] == coordinates); %%problema! in caso di quadrato va prima per righe
+                log = ([y(j) z(j)] == coordinates); 
                 log2 = [];
-                for k=1:size(coordinates,2)
-                    log2 = [log2 log(1,k)&&log(2,k)];       
+                for k=1:size(coordinates,1)
+                    log2 = [log2 log(k,1)&&log(k,2)];       
                 end
                 if  all(~(log2))
-                    coordinates=[coordinates [y(i);z(i)] ];  
+                    coordinates=[coordinates; [y(j) z(j)] ];  
                     conn = conn+1;
                 end
             end
