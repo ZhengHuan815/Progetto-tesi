@@ -21,11 +21,12 @@ function [ matrice_cricche, N_cicli, numero_cricca] = Paris( matrice_cricche,N_c
 
 
 dK = @(c,dsigma) (pi*c)^(1/2) * dsigma; % funzione che descrive il fattore di intensificazione degli sforzi
-C = ; %parametro del materiale
-m = ; %parametro del materiale
-flag=0;
+C = 0.013; %parametro del materiale
+m = 4.5; %parametro del materiale
 
 while N_cicli<10e6
+    
+    flag=0;
     
     N_cicli = N_cicli + 1;
     
@@ -33,30 +34,32 @@ while N_cicli<10e6
         
         if matrice_cricche(i,7) ~= 2 || matrice_cricche(i,7) ~= 3
             
-            sigma = Sforzo_medio(matrice_cricche(i,:),matrice_cricche(i,6)/2); %l'area su cui si calcola lo sforzo medio è la metà dello spessore della trabecola
+            sigma = Sforzo_medio(matrice_cricche(i,:),matrice_cricche(i,6)/(2*0.032)); %l'area su cui si calcola lo sforzo medio è la metà dello spessore della trabecola
             k = dK( matrice_cricche(i,5), 2*sigma); % il Delta_sigma è assunto pari a 2 volte lo sforzo medio
-            k_thresold = ; %parametro locale
-            k1c = ; %parametro locale
+            k_thresold = 0; %parametro locale - variabili a caso
+            k1c = 1000; %parametro locale - variabili a caso
             
-            if k_thresold < k(i) < k1c 
+            if k > k_thresold  && k < k1c 
 
-                matrice_cricche(i,5) = matrice_cricche(i,5) + C*k(i)^m ; %incrementa lunghezza cricca
+                matrice_cricche(i,5) = matrice_cricche(i,5) + C*k^m ; %incrementa lunghezza cricca
 
-                if matrice_cricche(i,5) >= 0.5*matrice_cricche(i,4) && matrice_cricche(i,7)==0   % se la lunghezza della cricca raggiunge la metà dello spessore minimo della trabecola e non è già stata modificata si rielabora la mesh  
-
-                    matrice_cricche(i,7) = 1;
-                    numero_cricca = i;
-                    flag=1;
-
-                elseif  matrice_cricche(i,5) >= matrice_cricche(i,4) % condizione implicita && matrice_cricche(i,7)==1 - se la trabecola è già stata modificata deve verificarsi la condizone di fallimento
+                
+                if  matrice_cricche(i,5) >= matrice_cricche(i,6) % condizione implicita && matrice_cricche(i,7)==1 - se la trabecola è già stata modificata deve verificarsi la condizone di fallimento
 
                     matrice_cricche(i,7) = 2;
                     numero_cricca = i;
                     flag=1;
 
                 end
+                
+                elseif matrice_cricche(i,5) >= 0.5*matrice_cricche(i,6) && matrice_cricche(i,7)==0   % se la lunghezza della cricca raggiunge la metà dello spessore minimo della trabecola e non è già stata modificata si rielabora la mesh  
 
-            elseif k(i) > k1c % se lo sforzo locale supera lo sforzo critico la trabecola fallisce immediatamente
+                    matrice_cricche(i,7) = 1;
+                    numero_cricca = i;
+                    flag=1;
+
+
+            elseif k > k1c % se lo sforzo locale supera lo sforzo critico la trabecola fallisce immediatamente
 
                 matrice_cricche(i,7) = 3;
                 numero_cricca = i;
