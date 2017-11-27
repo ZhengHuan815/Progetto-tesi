@@ -10,7 +10,7 @@ function [ i ] = Spessore( riga_cricca,numero_cricca )
 
 global mesh_modificata
 
-logical=1; %flag di appoggio per l'uscita dal secondo ciclo
+
 dim = size(mesh_modificata,1); %mesh quadrata - 1 sola dimensione
 xc = riga_cricca(1); %fissato. La funzione si muove sul piano y-z
 yc = riga_cricca(2); %coordinate del centro
@@ -22,6 +22,8 @@ R_max = max([yc zc dim-yc dim-zc]); %scelta di una condizione di terminazione
 
 
 for i=1:R_max 
+    
+    logical=1; %flag di appoggio per l'uscita dal secondo ciclo
     
     % definisce la funzione di controllo (circonferenza 2-D)
     f = @(y,z) (y).^2 + (z).^2 - i.^2;
@@ -44,25 +46,21 @@ for i=1:R_max
         
             if  yc+dy>=1 && yc+dy<=dim && zc+dz>=1 && zc+dz<=dim && (mesh_modificata(xc,yc+dy,zc+dz) == ID_trabecola) % || mesh_modificata(xc,yc+dy,zc+dz) == ID_trabecola+1)
                 logical=0;
-                mesh_modificata(xc,yc+dy,zc+dz)=100;
                 break
             end
             
             if  yc+dz>=1 && yc+dz<=dim && zc+dy>=1 && zc+dy<=dim && (mesh_modificata(xc,yc+dz,zc+dy) == ID_trabecola) % || mesh_modificata(xc,yc+dz,zc+dy) == ID_trabecola+1)
                 logical=0;
-                mesh_modificata(xc,yc+dz,zc+dy)=150;
                 break
             end
             
             if  yc-dy>=1 && yc-dy<=dim && zc+dz>=1 && zc+dz<=dim && (mesh_modificata(xc,yc-dy,zc+dz) == ID_trabecola) % || mesh_modificata(xc,yc-dy,zc+dz) == ID_trabecola+1)
                 logical=0;
-                mesh_modificata(xc,yc-dy,zc+dz)=50;
                 break
             end
             
             if  yc-dz>=1 && yc-dz<=dim && zc+dy>=1 && zc+dy<=dim && (mesh_modificata(xc,yc-dz,zc+dy) == ID_trabecola) % || mesh_modificata(xc,yc-dz,zc+dy) == ID_trabecola+1)
                 logical=0;
-                mesh_modificata(xc,yc-dz,zc+dy)=25;
                 break
             end
             
@@ -73,19 +71,17 @@ for i=1:R_max
             
             if  yc-dz>=1 && yc-dz<=dim && zc-dy>=1 && zc-dy<=dim && (mesh_modificata(xc,yc-dz,zc-dy) == ID_trabecola) % || mesh_modificata(xc,yc-dz,zc-dy) == ID_trabecola+1)
                 logical=0;
-                mesh_modificata(xc,yc-dz,zc-dy)=75;
                 break
             end
             
             if  yc+dy>=1 && yc+dy<=dim && zc-dz>=1 && zc-dz<=dim && (mesh_modificata(xc,yc+dy,zc-dz) == ID_trabecola) % || mesh_modificata(xc,yc+dy,zc-dz) == ID_trabecola+1)
                 logical=0;
-                mesh_modificata(xc,yc+dy,zc-dz)=125;
+%                 mesh_modificata(xc,yc+dy,zc-dz)=125;
                 break
             end
             
             if  yc+dz>=1 && yc+dz<=dim && zc-dy>=1 && zc-dy<=dim && (mesh_modificata(xc,yc+dz,zc-dy) == ID_trabecola) %  || mesh_modificata(xc,yc+dz,zc-dy) == ID_trabecola+1)
                 logical=0;
-                mesh_modificata(xc,yc+dz,zc-dy)=175;
                 break
             end
                      

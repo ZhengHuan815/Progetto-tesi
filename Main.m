@@ -16,7 +16,7 @@ Cicli_iniziali = 0;
 mesh_iniziale = double(matrice_erosa_c); 
 mesh_modificata = Ricerca_bordi(mesh_iniziale);
 matrice_cricche = Crea_cricche(numero_cricche);
-a(:,:) = mesh_modificata(25,:,:);
+a(:,:) = mesh_modificata(12,:,:);
 figure; imagesc(a);
 %%
 
@@ -34,6 +34,12 @@ for i=1:size(matrice_cricche,1)
     z = matrice_cricche(i,3);
     matrice_cricche(i,6) = dim_voxel*Spessore(matrice_cricche(i,:),mesh_modificata(x,y,z));
 end
+
+% x = matrice_cricche(16,1);
+% y = matrice_cricche(16,2);
+% z = matrice_cricche(16,3);
+% matrice_cricche(16,6) = dim_voxel*Spessore(matrice_cricche(16,:),mesh_modificata(x,y,z));
+
  %%
 [matrice_cricche_modificata,Cicli_finali,numero_cricca] = Paris (matrice_cricche,Cicli_iniziali);
 
