@@ -58,13 +58,15 @@ end
 y = y';
 
 x = 0:.01:0.35;
-%histogram(y);
+% histogram(y);
 
 %figure
 
 y = fitdist(y,'beta');
-%distribuzione = pdf(y,x);
-%plot(x,distribuzione,'LineWidth',2)
+% distribuzione = pdf(y,x);
+% plot(x,distribuzione,'LineWidth',2)
+% ylabel('Cr.Num/Area');
+% xlabel('Cr.Lenght [mm]');
 
 r = random(y);
 %hist(r);

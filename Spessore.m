@@ -76,7 +76,6 @@ for i=1:R_max
             
             if  yc+dy>=1 && yc+dy<=dim && zc-dz>=1 && zc-dz<=dim && (mesh_modificata(xc,yc+dy,zc-dz) == ID_trabecola) % || mesh_modificata(xc,yc+dy,zc-dz) == ID_trabecola+1)
                 logical=0;
-%                 mesh_modificata(xc,yc+dy,zc-dz)=125;
                 break
             end
             

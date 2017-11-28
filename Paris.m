@@ -25,6 +25,7 @@ C = 0.013; %parametro del materiale
 m = 4.5; %parametro del materiale
 
 sigma=zeros(size(matrice_cricche,1));
+lung=zeros(200,10000);
 
 for i=1:size(matrice_cricche,1)
     sigma(i) = Sforzo_medio(matrice_cricche(i,:),matrice_cricche(i,6)/(2*0.032)); %l'area su cui si calcola lo sforzo medio è la metà dello spessore della trabecola

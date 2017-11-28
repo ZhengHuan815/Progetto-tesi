@@ -1,5 +1,5 @@
 me = double(matrice_erosa_c);
-a(:,:) = me(5,:,:);
+a(:,:) = me(:,29,:);
 ed = bwmorph(a,'remove');
 sk = bwmorph(a,'skel',Inf);
 ep = bwmorph(sk,'endpoints');

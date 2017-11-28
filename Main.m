@@ -4,14 +4,14 @@ dim_voxel=  0.032; %dimensione del singolo voxel in micrometri
 
 %% PRIMO GIRO
 
-load('k_2_n_200.mat'); %carica la mesh elaborata e compressa dal codice precedente
+load('k_2_n_64.mat'); %carica la mesh elaborata e compressa dal codice precedente
 incidenze = MATRICENOSTRA;
-tab=readtable('k2n200.dat'); %carica la FEM relativa alla mesh di cui sopra
+tab=readtable('k2n64.dat'); %carica la FEM relativa alla mesh di cui sopra
 sforzi = table2array(tab); %trasforma la tabella della FEM in matrice
 sforzi(:,1) = [];
 Sforzi4D;
 
-numero_cricche = 200; %numero cricche da collocare
+numero_cricche = 6; %numero cricche da collocare
 Cicli_iniziali = 0;
 
 mesh_iniziale = double(matrice_erosa_c); 
