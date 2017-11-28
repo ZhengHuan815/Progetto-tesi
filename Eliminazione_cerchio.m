@@ -1,4 +1,4 @@
-function [riga_cricche]=Eliminazione_cerchio(riga_cricche,numero_cricca)
+function [riga_cricche]=Eliminazione_cerchio(riga_cricche)
 
 global mesh_iniziale mesh_modificata
 
@@ -82,6 +82,8 @@ dz=0;
                 
     
     end
+    
+end
 
 %RICOLLOCAZIONE CRICCA
 R=R+1;
@@ -169,8 +171,3 @@ dz = 0;
     end    
     
 end
-
-        
-        
-        
-    
