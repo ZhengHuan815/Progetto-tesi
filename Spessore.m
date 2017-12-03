@@ -4,8 +4,8 @@ function [ i ] = Spessore( riga_cricca,numero_cricca )
 % centro P che inscrive la forma.
 % Input: riga_cricca fornisce le informazioni della cricca - centro 
 %        numero_cricca fornisce l'ID della trabecola
-% Output: spessore espresso in unità intere [voxel]
-% la funzione è basata sull'algoritmo di Brasenham per la circonferenza
+% Output: spessore espresso in unitï¿½ intere [voxel]
+% la funzione ï¿½ basata sull'algoritmo di Brasenham per la circonferenza
 % ! utilizza variabili globali per verifica condizioni ma non le modifica
 
 global mesh_modificata
@@ -15,7 +15,7 @@ dim = size(mesh_modificata,1); %mesh quadrata - 1 sola dimensione
 xc = riga_cricca(1); %fissato. La funzione si muove sul piano y-z
 yc = riga_cricca(2); %coordinate del centro
 zc = riga_cricca(3);
-ID_trabecola=numero_cricca; %scelta progettuale - identifica univocamente la trabecola
+ID_trabecola = numero_cricca; %scelta progettuale - identifica univocamente la trabecola
 R_max = max([yc zc dim-yc dim-zc]); %scelta di una condizione di terminazione
                                     %per evitare cicli infiniti
 
@@ -41,7 +41,7 @@ for i=1:R_max
             %le condizioni iniziali servono a evitare che il controllo su
             %mesh_modificata avvenga per valori non compresi tra le sue
             %dimensioni massima e minima.
-            %è sufficiente che un solo punto della circonferenza appartenga alla trabecola 
+            %ï¿½ sufficiente che un solo punto della circonferenza appartenga alla trabecola 
             %per uscire dal while e incrementare il raggio di analisi
         
             if  yc+dy>=1 && yc+dy<=dim && zc+dz>=1 && zc+dz<=dim && (mesh_modificata(xc,yc+dy,zc+dz) == ID_trabecola) % || mesh_modificata(xc,yc+dy,zc+dz) == ID_trabecola+1)
@@ -95,9 +95,9 @@ for i=1:R_max
                 
     
     end
-    %se logical è rimasto uno significa che il while ha scorso tutta la
+    %se logical ï¿½ rimasto uno significa che il while ha scorso tutta la
     %circonferenza senza incontrare punti appartenenti alla trabecola.
-    %di conseguenza il raggio è quello cercato e si esce dal for,
+    %di conseguenza il raggio ï¿½ quello cercato e si esce dal for,
     %terminando la funzione.
     if logical==1
         break
