@@ -1,4 +1,4 @@
-function [riga_cricca] = elimina_cerchio(riga_cricca)
+function [] = elimina_cerchio(riga_cricca)
 % dato una riga della matrice_cricche la funzione elimina i voxel pieni
 % nel cerchio concentrico nella cricca con raggio la lunghezza istantanea.
 
