@@ -2,14 +2,14 @@ function [riga_cricche]=Eliminazione_cerchio(riga_cricche)
 
 global mesh_iniziale mesh_modificata
 
-%   Input: sezione_mesh è la sezione orizzontale di interesse 
+%   Input: sezione_mesh ï¿½ la sezione orizzontale di interesse 
 %          coordinate_centro sono le coordinate ESATTE del centro del
 %          cerchio che si desidera approssimare
-%          R è il raggio del cerchio espresso in unità di misura "Voxel" -
+%          R ï¿½ il raggio del cerchio espresso in unitï¿½ di misura "Voxel" -
 %          intero maggiore di 0
-%          ID_trabecola è il numero che identifica univocamente la
+%          ID_trabecola ï¿½ il numero che identifica univocamente la
 %          trabecola in analisi
-%   Output: sezione_mesh_inattivata è la sezione orizzontale di interesse
+%   Output: sezione_mesh_inattivata ï¿½ la sezione orizzontale di interesse
 %   da cui sono stati eliminati i voxel nella circonferenza
 
 dim=size(mesh_iniziale,1);
