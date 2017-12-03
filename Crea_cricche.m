@@ -10,11 +10,11 @@ global mesh_modificata
 %             
 %             
 %             
-%   Input: mesh_contorno è la mesh con i contorni evidenziati
-%          n_cricche è il numero di elementi di contorno da estrarre
+%   Input: mesh_contorno ï¿½ la mesh con i contorni evidenziati
+%          n_cricche ï¿½ il numero di elementi di contorno da estrarre
 %          casualmente dalla mesh
 %
-%   Output: una matrice n_cricche x 6 dove così strutturata
+%   Output: una matrice n_cricche x 6 dove cosï¿½ strutturata
 %
 %             coord x   coord y   coord z   lunghezza iniziale   lunghezza istantanea     spessore trabecola   stato trabecola
 %  cricca 1
@@ -28,7 +28,7 @@ dim_mesh= size(mesh_modificata);
 nmax=dim_mesh(1)*dim_mesh(2)*dim_mesh(3);
 matrice_cricche=zeros(n_cricche-1,7);
 
-while i < n_cricche && n < nmax
+while i <= n_cricche && n < nmax
     
     x = randi(dim_mesh(1),1); 
     y = randi(dim_mesh(2),1);
