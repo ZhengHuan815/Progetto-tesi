@@ -1,32 +1,36 @@
 
-global mesh_iniziale mesh_modificata sforzi incidenze SF
+clear
+clc
+%%          
+global mesh_iniziale mesh_modificata sforzi incidenze
 dim_voxel=  0.032; %dimensione del singolo voxel in micrometri
-
 %% PRIMO GIRO
 
 load('k_2_n_64.mat'); %carica la mesh elaborata e compressa dal codice precedente
 incidenze = MATRICENOSTRA;
-tab=readtable('k2n64.dat'); %carica la FEM relativa alla mesh di cui sopra
+tab=readtable('k2n64_pulito.dat'); %carica la FEM relativa alla mesh di cui sopra
+%%%%%%% la Fem contiene righe in eccesso, si ricorda di ripulire. %%%%%%%
 sforzi = table2array(tab); %trasforma la tabella della FEM in matrice
 sforzi(:,1) = [];
 Sforzi4D;
 
-numero_cricche = 6; %numero cricche da collocare
+numero_cricche = 5; %numero cricche da collocare
 Cicli_iniziali = 0;
 
 mesh_iniziale = double(matrice_erosa_c); 
 Rotate(3);
-mesh_modificata = Ricerca_bordi(mesh_iniziale);
+mesh_modificata = mesh_iniziale;
+Ricerca_bordi();
 matrice_cricche = Crea_cricche(numero_cricche);
 
-%%
-k=unique(matrice_cricche(:,1));
+%% etichetta la trabecola con li cricche
+k=unique(matrice_cricche(:,2));
 k=k';
 for i=k
-    mat(:,:) = mesh_modificata(i,:,:);
-    mesh_modificata(i,:,:) = bwlabel(mat);
+    mat(:,:) = mesh_modificata(:,i,:);
+    mesh_modificata(:,i,:) = bwlabel(mat);
 end
-
+%% calcola lo spessore della trabecola delle cricche e aggiorna matrice_cricche
 for i=1:size(matrice_cricche,1)
     
     x = matrice_cricche(i,1);
@@ -35,12 +39,13 @@ for i=1:size(matrice_cricche,1)
     matrice_cricche(i,6) = dim_voxel*Spessore(matrice_cricche(i,:),mesh_modificata(x,y,z));
 end
 
- %%
+%% propagazione cricche
 [matrice_cricche_modificata,Cicli_finali] = Paris (matrice_cricche,Cicli_iniziali);
 
+%% eliminazione totale o parziale trabecola
 for i=1:size(matrice_cricche_modificata,1)
-    matrice_cricche_modificata(i,:) = Eliminazione_cerchio (matrice_cricche_modificata(i,:));
-end 
+    elimina_cerchio (matrice_cricche_modificata(i,:));
+end
 % mat=mesh_iniziale;
 % save('giro1.mat','mat','matrice_cricche_modificata','Cicli_finali','incidenze');
 
@@ -78,7 +83,7 @@ end
 [matrice_cricche_modificata,Cicli_finali] = Paris (matrice_cricche,Cicli_iniziali);
 
 for i=1:size(matrice_cricche_modificata,1)
-    matrice_cricche_modificata(i,:) = Eliminazione_cerchio (matrice_cricche_modificata(i,:),i);
+    elimina_cerchio (matrice_cricche_modificata(i,:));
 end
 mat=mesh_iniziale;
 save('giro2.mat','mat','matrice_cricche_modificata','Cicli_finali','incidenze');
