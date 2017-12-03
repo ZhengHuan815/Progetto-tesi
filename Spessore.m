@@ -4,8 +4,8 @@ function [ i ] = Spessore( riga_cricca,numero_cricca )
 % centro P che inscrive la forma.
 % Input: riga_cricca fornisce le informazioni della cricca - centro 
 %        numero_cricca fornisce l'ID della trabecola
-% Output: spessore espresso in unit� intere [voxel]
-% la funzione � basata sull'algoritmo di Brasenham per la circonferenza
+% Output: spessore espresso in unità intere [voxel]
+% la funzione è basata sull'algoritmo di Brasenham per la circonferenza
 % ! utilizza variabili globali per verifica condizioni ma non le modifica
 
 global mesh_modificata
