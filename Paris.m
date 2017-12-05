@@ -20,12 +20,11 @@ function [ matrice_cricche, N_cicli] = Paris( matrice_cricche,N_cicli )
 %         a metà)
 
 
-dK = @(c,dsigma) (pi*c)^(1/2) * dsigma; % funzione che descrive il fattore di intensificazione degli sforzi
+dK = @(c,dsigma) (pi*c*10^-3)^(1/2) * dsigma*10^3; % funzione che descrive il fattore di intensificazione degli sforzi
 C = 0.013; %parametro del materiale
 m = 4.5; %parametro del materiale
 
 sigma=zeros(size(matrice_cricche,1));
-lung=zeros(200,10000);
 
 for i=1:size(matrice_cricche,1)
     sigma(i) = Sforzo_medio(matrice_cricche(i,:),matrice_cricche(i,6)/(2*0.032)); %l'area su cui si calcola lo sforzo medio è la metà dello spessore della trabecola
@@ -47,7 +46,7 @@ while N_cicli<10e6
             
             if k > k_thresold  && k < k1c 
 
-                matrice_cricche(i,5) = matrice_cricche(i,5) + C*k^m ; %incrementa lunghezza cricca
+                matrice_cricche(i,5) = matrice_cricche(i,5) + 10^-3 *C*k^m ; %incrementa lunghezza cricca
 
                 
                 if  matrice_cricche(i,5) >= matrice_cricche(i,6) % condizione implicita && matrice_cricche(i,7)==1 - se la trabecola è già stata modificata deve verificarsi la condizone di fallimento
