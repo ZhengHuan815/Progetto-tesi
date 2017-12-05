@@ -2,7 +2,7 @@
 clear
 clc
 %%          
-global mesh_iniziale mesh_modificata sforzi incidenze
+global mesh_iniziale mesh_modificata sforzi incidenze SF
 dim_voxel=  0.032; %dimensione del singolo voxel in micrometri
 %% PRIMO GIRO
 
