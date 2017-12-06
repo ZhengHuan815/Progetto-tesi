@@ -24,11 +24,11 @@ Ricerca_bordi();
 matrice_cricche = Crea_cricche(numero_cricche);
 
 %% etichetta la trabecola con li cricche
-k=unique(matrice_cricche(:,2));
+k=unique(matrice_cricche(:,1));
 k=k';
 for i=k
-    mat(:,:) = mesh_modificata(:,i,:);
-    mesh_modificata(:,i,:) = bwlabel(mat);
+    mat(:,:) = mesh_modificata(i,:,:);
+    mesh_modificata(i,:,:) = bwlabel(mat);
 end
 %% calcola lo spessore della trabecola delle cricche e aggiorna matrice_cricche
 for i=1:size(matrice_cricche,1)
@@ -44,7 +44,7 @@ end
 
 %% eliminazione totale o parziale trabecola
 for i=1:size(matrice_cricche_modificata,1)
-    elimina_cerchio (matrice_cricche_modificata(i,:));
+    elimina_cerchio (matrice_cricche_modificata(i,:),dim_voxel);
 end
 % mat=mesh_iniziale;
 % save('giro1.mat','mat','matrice_cricche_modificata','Cicli_finali','incidenze');
@@ -83,7 +83,7 @@ end
 [matrice_cricche_modificata,Cicli_finali] = Paris (matrice_cricche,Cicli_iniziali);
 
 for i=1:size(matrice_cricche_modificata,1)
-    elimina_cerchio (matrice_cricche_modificata(i,:));
+    elimina_cerchio (matrice_cricche_modificata(i,:),dim_voxel);
 end
 mat=mesh_iniziale;
 save('giro2.mat','mat','matrice_cricche_modificata','Cicli_finali','incidenze');
