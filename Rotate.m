@@ -4,20 +4,10 @@ global mesh_iniziale
 
 dim = size(mesh_iniziale,1);
 
-if axis == 1
-    for x=1:dim
-        mesh_iniziale(x,:,:) = mesh_iniziale(x,:,:)';
-    end
-    
-elseif axis == 2
-    for y=1:dim
-        mesh_iniziale(:,y,:) = mesh_iniziale(:,y,:)';
-    end
-    
+if axis == 2
+        mesh_iniziale = permute(mesh_iniziale,[2 1 3]);
 elseif axis == 3
-    for z=1:dim
-        mesh_iniziale(:,:,z) = mesh_iniziale(:,:,z)';
-    end
+   mesh_iniziale = permute(mesh_iniziale,[3 2 1]);
 end
 
 end
