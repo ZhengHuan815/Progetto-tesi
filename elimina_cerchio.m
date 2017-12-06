@@ -1,21 +1,21 @@
-function [] = elimina_cerchio(riga_cricca)
+function [] = elimina_cerchio(riga_cricca,dim_voxel)
 % dato una riga della matrice_cricche la funzione elimina i voxel pieni
 % nel cerchio concentrico nella cricca con raggio la lunghezza istantanea.
 
 global mesh_iniziale mesh_modificata
 dim = size(mesh_modificata);
-a = 0.032;
+
 % fattore di conversione
-l_voxel = riga_cricca(1,5)/a;
+l_voxel = riga_cricca(1,5)/dim_voxel;
 % conversione
-j = riga_cricca(2);
+i = riga_cricca(1);
 % sollecitazione in direzione y
 
-for i = (riga_cricca(1,1)-floor(l_voxel)):(riga_cricca(1,1)+ceil(l_voxel))
+for j = (riga_cricca(1,2)-floor(l_voxel)):(riga_cricca(1,2)+ceil(l_voxel))
     for k = (riga_cricca(1,3)-floor(l_voxel/2)):(riga_cricca(1,3)+ceil(l_voxel/2))
-        if i>0 && i<dim(1) && k>0 && k<dim(3)
+        if j>0 && j<=dim(2) && k>0 && k<=dim(3)
             % per non uscire dalla mesh
-            if sqrt((riga_cricca(1)-i)^2+(riga_cricca(3)-k)^2) < l_voxel
+            if sqrt((riga_cricca(2)-j)^2+(riga_cricca(3)-k)^2) < l_voxel
                 % distanza con pitagora
                 mesh_modificata(i,j,k) = 0;
                 mesh_iniziale (i,j,k) = 0;
