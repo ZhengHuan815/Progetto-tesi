@@ -20,8 +20,14 @@ Cicli_iniziali = 0;
 mesh_iniziale = double(matrice_erosa_c); 
 Rotate(3);
 mesh_modificata = mesh_iniziale;
+dim = size(mesh_iniziale,1);
 Ricerca_bordi();
 matrice_cricche = Crea_cricche(numero_cricche);
+
+%% calcolo parametri macro
+porosita=size(incidenze,1)/dim^3;
+sigma_tot = sum(sforzi(:,2)); 
+sigma_sp =  sigma_tot * porosita; 
 
 %% etichetta la trabecola con li cricche
 k=unique(matrice_cricche(:,1));
