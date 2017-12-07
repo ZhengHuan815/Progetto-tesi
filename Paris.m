@@ -3,7 +3,7 @@ function [ matrice_cricche, N_cicli] = Paris( matrice_cricche,N_cicli )
 %Paris Produce l'aumento della lunghezza delle cricche secondo la legge di
 %      Paris. Si arresta quando una trabecola fallisce (cond 1 -> sforzo
 %      locale > di sforzo critico; cond 2 -> lunghezza cricca > spessore
-%      trabecola) o quando una cricca raggiunge metà dello spessore della
+%      trabecola) o quando una cricca raggiunge meta' dello spessore della
 %      trabecola corrispondente. 
 %   sigma_medio() riceve: coordinate e spessore trabecola e restituisce lo
 %   sforzo medio in direzione dell'asse di carico
@@ -14,10 +14,10 @@ function [ matrice_cricche, N_cicli] = Paris( matrice_cricche,N_cicli )
 % Output: matrice_cricche aggiornata
 %         N_cicli aggiornati
 %         coord_trabecola restituisce le coordinate della trabecola per cui
-%         si è interrotto il ciclo
-%         stato_trabecola restituisce il tipo di avvenimento per cui si è
+%         si e' interrotto il ciclo
+%         stato_trabecola restituisce il tipo di avvenimento per cui si e'
 %         interrotto il ciclo (trabecola inattivata o trabecola inattivata
-%         a metà)
+%         a meta')1
 
 
 dK = @(c,dsigma) (pi*c*10^-3)^(1/2) * dsigma*10^3; % funzione che descrive il fattore di intensificazione degli sforzi
@@ -27,7 +27,7 @@ m = 4.5; %parametro del materiale
 sigma=zeros(size(matrice_cricche,1));
 
 for i=1:size(matrice_cricche,1)
-    sigma(i) = Sforzo_medio(matrice_cricche(i,:),matrice_cricche(i,6)/(2*0.032)); %l'area su cui si calcola lo sforzo medio è la metà dello spessore della trabecola
+    sigma(i) = Sforzo_medio(matrice_cricche(i,:),matrice_cricche(i,6)/(2*0.032)); %l'area su cui si calcola lo sforzo medio e' la meta' dello spessore della trabecola
 end
 
 while N_cicli<10e6
@@ -38,39 +38,64 @@ while N_cicli<10e6
     
     for i=1:size(matrice_cricche,1)
         
-        if matrice_cricche(i,7) ~= 2 || matrice_cricche(i,7) ~= 3
+        if (matrice_cricche(i,7) ~= 2 && matrice_cricche(i,7) ~= 3)
             
-            k = dK( matrice_cricche(i,5), 2*sigma(i)); % il Delta_sigma è assunto pari a 2 volte lo sforzo medio
+            k = dK( matrice_cricche(i,5), 2*sigma(i)); % il Delta_sigma Ã¨ assunto pari a 2 volte lo sforzo medio
             k_thresold = 0; %parametro locale - variabili a caso
             k1c = 1000; %parametro locale - variabili a caso
             
             if k > k_thresold  && k < k1c 
 
-                matrice_cricche(i,5) = matrice_cricche(i,5) + 10^-3 *C*k^m ; %incrementa lunghezza cricca
+                matrice_cricche(i,5) = matrice_cricche(i,5) + 10^-3 *C*k^m ; 
+                % incrementa lunghezza cricca
 
-                
-                if  matrice_cricche(i,5) >= matrice_cricche(i,6) % condizione implicita && matrice_cricche(i,7)==1 - se la trabecola è già stata modificata deve verificarsi la condizone di fallimento
+                if  (matrice_cricche(i,5) >= matrice_cricche(i,6)) && ...
+                        N_cicli ~= 1
+                    % condizione implicita && matrice_cricche(i,7)==1 - se 
+                    % la trabecola Ã¨ giÃ  stata modificata deve verificarsi 
+                    % la condizone di fallimento.
 
                     matrice_cricche(i,7) = 2;
                    
                     flag=1;
-       
+                    
+                elseif (matrice_cricche(i,5) >= matrice_cricche(i,6)) ...
+                        && N_cicli == 1
+                    % condizione per cui la function non esce quando si ha
+                    % una cricca con lunghezza iniziale che supera lo
+                    % spessore della trabecola.
+                    
+                    matrice_cricche(i,7) = 2;
                 
-                elseif matrice_cricche(i,5) >= 0.5*matrice_cricche(i,6) && matrice_cricche(i,7)==0   % se la lunghezza della cricca raggiunge la metà dello spessore minimo della trabecola e non è già stata modificata si rielabora la mesh  
+                elseif matrice_cricche(i,5) >= 0.5*matrice_cricche(i,6) ...
+                        && matrice_cricche(i,7)==0 && N_cicli ~= 1  
+                    % se la lunghezza della cricca raggiunge la metÃ  dello 
+                    % spessore minimo della trabecola e non Ã¨ giÃ  stata 
+                    % modificata si rielabora la mesh  
 
                     matrice_cricche(i,7) = 1;
            
                     flag=1;
+                    
+                elseif matrice_cricche(i,5) >= 0.5*matrice_cricche(i,6) ...
+                        && matrice_cricche(i,7)==0 && N_cicli == 1
+                    % condizione per cui la function non esce quando si ha
+                    % una cricca con lunghezza iniziale che supera lo
+                    % spessore della trabecola.
+                    
+                    matrice_cricche(i,7) = 1;
+                    
                 end
 
-            elseif k > k1c % se lo sforzo locale supera lo sforzo critico la trabecola fallisce immediatamente
+            elseif k > k1c 
+                % se lo sforzo locale supera lo sforzo critico la trabecola
+                % fallisce immediatamente.
 
                 matrice_cricche(i,7) = 3;
            
                 flag=1;
-
-            end
-
+                
+            end      
         end
     end
     
@@ -81,4 +106,5 @@ while N_cicli<10e6
 end
 
 end
+
 
