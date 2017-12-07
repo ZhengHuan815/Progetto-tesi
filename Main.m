@@ -32,14 +32,15 @@ E_mat = x(3); %modulo elastico in GPa
 sigma_tot = sum(sforzi(:,2))*E_mat*10^3; 
 sigma_sp =  sigma_tot * porosita; %sforzo di comparazione con lo sforzo sperimentale
 epsilon = x(2)/dim;
-
-E = [Cicli_iniziali sigma_sp/epsilon]; % FINIRE, manca parametro di trasformazione alfa
+E = [Cicli_iniziali sigma_sp/epsilon]; 
+alfa = E_sp/E(1,2);
 
 Rotate(x(1)); %porta le corrette rotazioni della matrice per allineare l'asse di carico con l'asse x - ATTENZIONE! Prima di ripassare la mesh mangiata a Vena bisogna antipermutare
 Sforzi4D(x(1)); 
 mesh_modificata = mesh_iniziale;
 Ricerca_bordi;
 matrice_cricche = Crea_cricche(numero_cricche);
+
 
 %% etichetta la trabecola con li cricche
 k=unique(matrice_cricche(:,1));
