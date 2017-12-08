@@ -35,7 +35,7 @@ epsilon = x(2)/dim;
 E = [Cicli_iniziali sigma_sp/epsilon]; 
 alfa = E_sp/E(1,2);
 
-Rotate(x(1)); %porta le corrette rotazioni della matrice per allineare l'asse di carico con l'asse x - ATTENZIONE! Prima di ripassare la mesh mangiata a Vena bisogna antipermutare
+Rotate(x(1)); %porta le corrette rotazioni della matrice per allineare l'asse di carico con l'asse x 
 Sforzi4D(x(1)); 
 mesh_modificata = mesh_iniziale;
 Ricerca_bordi;
@@ -66,8 +66,10 @@ end
 for i=1:size(matrice_cricche_modificata,1)
     elimina_cerchio (matrice_cricche_modificata(i,:),dim_voxel);
 end
-% mat=mesh_iniziale;
-% save('giro1.mat','mat','matrice_cricche_modificata','Cicli_finali','incidenze');
+
+Rotate(x(1)); %ritraspone le matrici in modo da ritornare alla configurazione originale prima di rinviare la mesh alla FEM
+
+% save('giro1.mat','mesh_iniziale','matrice_cricche_modificata','Cicli_finali','incidenze');
 
 %% GIRI SUCCESSIVI
 clear variables;
