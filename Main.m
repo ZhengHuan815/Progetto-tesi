@@ -1,9 +1,9 @@
 
 clear
 clc
-%%          
+
 global mesh_iniziale mesh_modificata sforzi incidenze SF
-dim_voxel=  0.032; %dimensione del singolo voxel in micrometri
+
 %% PRIMO GIRO
 
 load('k_2_n_64.mat'); %carica la mesh elaborata e compressa dal codice precedente
@@ -12,16 +12,35 @@ tab=readtable('k2n64_pulito.dat'); %carica la FEM relativa alla mesh di cui sopr
 %%%%%%% la Fem contiene righe in eccesso, si ricorda di ripulire. %%%%%%%
 sforzi = table2array(tab); %trasforma la tabella della FEM in matrice
 sforzi(:,1) = [];
-Sforzi4D;
+
 
 numero_cricche = 5; %numero cricche da collocare
 Cicli_iniziali = 0;
 
 mesh_iniziale = double(matrice_erosa_c); 
-Rotate(3);
+
+
+%% calcolo parametri macro e richiesta informazioni su input FEM e mesh
+x = inputdlg({'Direzione applicazione carico (x=1,y=2,z=3)','spostamento applicato (espresso in voxel)','Modulo elastico materiale - in GPa','Fattore di compressione (2, 3 o 6)'},...
+              'Parametri FEM e MESH'); 
+                                                    
+
+dim = size(mesh_iniziale,1);
+dim_voxel=  0.018*x(4); %dimensione del singolo voxel in millimetri
+porosita=size(incidenze,1)/dim^3; %frazione volumetrica della mesh
+E_mat = x(3); %modulo elastico in GPa
+sigma_tot = sum(sforzi(:,2))*E_mat*10^3; 
+sigma_sp =  sigma_tot * porosita; %sforzo di comparazione con lo sforzo sperimentale
+epsilon = x(2)/dim;
+E = [Cicli_iniziali sigma_sp/epsilon]; 
+alfa = E_sp/E(1,2);
+
+Rotate(x(1)); %porta le corrette rotazioni della matrice per allineare l'asse di carico con l'asse x 
+Sforzi4D(x(1)); 
 mesh_modificata = mesh_iniziale;
-Ricerca_bordi();
+Ricerca_bordi;
 matrice_cricche = Crea_cricche(numero_cricche);
+
 
 %% etichetta la trabecola con li cricche
 k=unique(matrice_cricche(:,1));
@@ -30,6 +49,7 @@ for i=k
     mat(:,:) = mesh_modificata(i,:,:);
     mesh_modificata(i,:,:) = bwlabel(mat);
 end
+
 %% calcola lo spessore della trabecola delle cricche e aggiorna matrice_cricche
 for i=1:size(matrice_cricche,1)
     
@@ -46,8 +66,10 @@ end
 for i=1:size(matrice_cricche_modificata,1)
     elimina_cerchio (matrice_cricche_modificata(i,:),dim_voxel);
 end
-% mat=mesh_iniziale;
-% save('giro1.mat','mat','matrice_cricche_modificata','Cicli_finali','incidenze');
+
+Rotate(x(1)); %ritraspone le matrici in modo da ritornare alla configurazione originale prima di rinviare la mesh alla FEM
+
+% save('giro1.mat','mesh_iniziale','matrice_cricche_modificata','Cicli_finali','incidenze');
 
 %% file inp per giro successivo
 IncidCoord;

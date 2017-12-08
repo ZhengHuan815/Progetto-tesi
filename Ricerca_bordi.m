@@ -1,16 +1,14 @@
-function []=Ricerca_bordi()
-
+function Ricerca_bordi
+% Trova e identifica i voxel di contorno della mesh
 global mesh_modificata 
 
 %Calcolo le dimensioni della matrice
 [x,y,z]=size(mesh_modificata);
 
-%Faccio scorrere i vari elementi della matrice con ciclo for
 for k=1:x
     for j=1:y
         for i=1:z
-            %Controllo che il voxel sia un 1 altrimenti non mi interessa
-            %vedere se � un bordo
+            
             if(mesh_modificata(i,j,k)==1)
                 %Evito controllo se la mesh � finita
                 if(i<x)
