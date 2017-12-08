@@ -49,6 +49,9 @@ end
 % mat=mesh_iniziale;
 % save('giro1.mat','mat','matrice_cricche_modificata','Cicli_finali','incidenze');
 
+%% file inp per giro successivo
+IncidCoord;
+
 %% GIRI SUCCESSIVI
 clear variables;
 dim_voxel=  0.032;
