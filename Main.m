@@ -71,6 +71,9 @@ Rotate(x(1)); %ritraspone le matrici in modo da ritornare alla configurazione or
 
 % save('giro1.mat','mesh_iniziale','matrice_cricche_modificata','Cicli_finali','incidenze');
 
+%% file inp per giro successivo
+IncidCoord;
+
 %% GIRI SUCCESSIVI
 clear variables;
 dim_voxel=  0.032;

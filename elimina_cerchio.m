@@ -1,8 +1,10 @@
 function elimina_cerchio(riga_cricca)
+
 % dato una riga della matrice_cricche la funzione elimina i voxel pieni
 % nel cerchio concentrico nella cricca con raggio la lunghezza istantanea.
 
 global mesh_iniziale mesh_modificata
+
 dim = size(mesh_iniziale);
 a = 0.032;
 % fattore di conversione
