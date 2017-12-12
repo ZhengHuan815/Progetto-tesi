@@ -35,7 +35,6 @@ sigma_sp =  sigma_tot * porosita; %sforzo di comparazione con lo sforzo sperimen
 epsilon = dati_ingresso(2)/dim;
 E = [Cicli_iniziali sigma_sp/epsilon]; 
 
-%alfa = E_sp/E(1,2);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% dà errore, è da modificare quando utilizzeremo dati sperimentali.%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -78,7 +77,7 @@ Rotate(dati_ingresso(1)); %ritraspone le matrici in modo da ritornare alla confi
 % save('giro1.mat','mesh_iniziale','matrice_cricche_modificata','Cicli_finali','incidenze');
 
 %% file inp per giro successivo
-IncidCoord;
+[,,,centroidi]=IncidCoord; %%dove vengono salvati i file?
 
 %% GIRI SUCCESSIVI
 clear variables;
