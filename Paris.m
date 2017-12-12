@@ -19,6 +19,7 @@ function [ matrice_cricche, N_cicli] = Paris( matrice_cricche,N_cicli )
 %         interrotto il ciclo (trabecola inattivata o trabecola inattivata
 %         a meta')1
 
+global dim_voxel
 
 dK = @(c,dsigma) (pi*c*10^-3)^(1/2) * dsigma*10^3; % funzione che descrive il fattore di intensificazione degli sforzi
 C = 0.013; %parametro del materiale
@@ -27,7 +28,7 @@ m = 4.5; %parametro del materiale
 sigma=zeros(size(matrice_cricche,1));
 
 for i=1:size(matrice_cricche,1)
-    sigma(i) = Sforzo_medio(matrice_cricche(i,:),matrice_cricche(i,6)/(2*0.032)); %l'area su cui si calcola lo sforzo medio e' la meta' dello spessore della trabecola
+    sigma(i) = Sforzo_medio(matrice_cricche(i,:),matrice_cricche(i,6)/(2*dim_voxel)); %l'area su cui si calcola lo sforzo medio e' la meta' dello spessore della trabecola
 end
 
 while N_cicli<10e6
