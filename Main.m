@@ -30,10 +30,10 @@ dim_voxel=  0.018*x(4); %dimensione del singolo voxel in millimetri
 porosita=size(incidenze,1)/dim^3; %frazione volumetrica della mesh
 E_mat = x(3); %modulo elastico in GPa
 sigma_tot = sum(sforzi(:,2))*E_mat*10^3; 
-sigma_sp =  sigma_tot * porosita; %sforzo di comparazione con lo sforzo sperimentale
+sigma_eq =  sigma_tot * porosita; %sforzo di comparazione con lo sforzo sperimentale
 epsilon = x(2)/dim;
-E = [Cicli_iniziali sigma_sp/epsilon]; 
-alfa = E_sp/E(1,2);
+E = [Cicli_iniziali sigma_eq]; 
+
 
 Rotate(x(1)); %porta le corrette rotazioni della matrice per allineare l'asse di carico con l'asse x 
 Sforzi4D(x(1)); 
@@ -72,7 +72,7 @@ Rotate(x(1)); %ritraspone le matrici in modo da ritornare alla configurazione or
 % save('giro1.mat','mesh_iniziale','matrice_cricche_modificata','Cicli_finali','incidenze');
 
 %% file inp per giro successivo
-IncidCoord;
+[,,,centroidi]=IncidCoord; %%dove vengono salvati i file?
 
 %% GIRI SUCCESSIVI
 clear variables;

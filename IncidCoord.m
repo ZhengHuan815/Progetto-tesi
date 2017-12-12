@@ -1,4 +1,4 @@
-function [incidenze,coordinate,nset_sup] = IncidCoord
+function [incidenze,coordinate,nset_sup,centroidi] = IncidCoord
 
 
 global mesh_iniziale
@@ -32,6 +32,7 @@ NodiLayer = (N_pixel_x+1)*(N_pixel_y+1);
 N_vox = nnz(mesh_iniziale);
 incidenze=zeros(N_vox,9);                                                     
 coordinate=zeros((N_vox*8),4); 
+centroidi=zeros(N_vox,3);
 % Inizializzazione delle tabelle
 
 for L=1:N_pixel_z
@@ -42,7 +43,8 @@ for L=1:N_pixel_z
             if mesh_iniziale(i,j,L)==1                                            
                 % Se il voxel e' pieno
                 
-                cont=cont+1;                                                      
+                cont=cont+1;                                                         % Conta il numero degli elementi finiti (voxel PIENI)
+                centroidi(n,:) = [i,j,L];                                                   
                 % Conta il numero dei voxel pieni
                
                 nodoA=NodiLayer*(L-1)+(N_pixel_x+1)*(j-1)+(i+1);
@@ -100,7 +102,8 @@ for L=1:N_pixel_z
     end
 end
 
-
+incidenze=unique(incidenze,'rows');% Vogliamo che la tabella sia anche ordinata, ma unique oltre che scartare i doppi ordina!
+centroidi = unique(centroidi,'rows');
 coordinate = unique(coordinate,'rows');
 % Scartiamo le righe vuote, i doppi e ordiniamo le tabelle per numero di 
 % nodo/elemento finito.
