@@ -1,13 +1,7 @@
 function [incidenze,coordinate,nset_sup,centroidi] = IncidCoord
 
 
-global mesh_iniziale
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%IncidCoord ha bisogno di un reverse rotate?%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-dim_voxel = 0.032;
+global mesh_iniziale dim_voxel
 
 x_max = size(mesh_iniziale,1);
 y_max = size(mesh_iniziale,2);

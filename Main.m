@@ -2,7 +2,7 @@
 clear
 clc
 
-global mesh_iniziale mesh_modificata sforzi incidenze SF
+global mesh_iniziale mesh_modificata sforzi incidenze SF dim_voxel
 
 %% PRIMO GIRO
 
@@ -21,22 +21,26 @@ mesh_iniziale = double(matrice_erosa_c);
 
 
 %% calcolo parametri macro e richiesta informazioni su input FEM e mesh
-x = inputdlg({'Direzione applicazione carico (x=1,y=2,z=3)','spostamento applicato (espresso in voxel)','Modulo elastico materiale - in GPa','Fattore di compressione (2, 3 o 6)'},...
+dati_ingresso = inputdlg({'Direzione applicazione carico (x=1,y=2,z=3)','spostamento applicato (espresso in voxel)','Modulo elastico materiale - in GPa','Fattore di compressione (2, 3 o 6)'},...
               'Parametri FEM e MESH'); 
+dati_ingresso = str2double(dati_ingresso);
+%converte cell in double, altrimenti non si puo' usare la sintassi x(4).
                                                     
-
 dim = size(mesh_iniziale,1);
-dim_voxel=  0.018*x(4); %dimensione del singolo voxel in millimetri
+dim_voxel=  0.018*dati_ingresso(4); %dimensione del singolo voxel in millimetri
 porosita=size(incidenze,1)/dim^3; %frazione volumetrica della mesh
-E_mat = x(3); %modulo elastico in GPa
+E_mat = dati_ingresso(3); %modulo elastico in GPa
 sigma_tot = sum(sforzi(:,2))*E_mat*10^3; 
-sigma_eq =  sigma_tot * porosita; %sforzo di comparazione con lo sforzo sperimentale
-epsilon = x(2)/dim;
-E = [Cicli_iniziali sigma_eq]; 
+sigma_sp =  sigma_tot * porosita; %sforzo di comparazione con lo sforzo sperimentale
+epsilon = dati_ingresso(2)/dim;
+E = [Cicli_iniziali sigma_sp/epsilon]; 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% dà errore, è da modificare quando utilizzeremo dati sperimentali.%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Rotate(x(1)); %porta le corrette rotazioni della matrice per allineare l'asse di carico con l'asse x 
-Sforzi4D(x(1)); 
+Rotate(dati_ingresso(1)); %porta le corrette rotazioni della matrice per allineare l'asse di carico con l'asse x 
+Sforzi4D(dati_ingresso(1)); 
 mesh_modificata = mesh_iniziale;
 Ricerca_bordi;
 matrice_cricche = Crea_cricche(numero_cricche);
@@ -64,10 +68,11 @@ end
 
 %% eliminazione totale o parziale trabecola
 for i=1:size(matrice_cricche_modificata,1)
-    elimina_cerchio (matrice_cricche_modificata(i,:),dim_voxel);
+    elimina_cerchio (matrice_cricche_modificata(i,:));
 end
 
-Rotate(x(1)); %ritraspone le matrici in modo da ritornare alla configurazione originale prima di rinviare la mesh alla FEM
+%%
+Rotate(dati_ingresso(1)); %ritraspone le matrici in modo da ritornare alla configurazione originale prima di rinviare la mesh alla FEM
 
 % save('giro1.mat','mesh_iniziale','matrice_cricche_modificata','Cicli_finali','incidenze');
 
