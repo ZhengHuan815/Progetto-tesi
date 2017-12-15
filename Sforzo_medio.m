@@ -20,6 +20,6 @@ for y=yc-R:yc+R
     end
 end
 
-sm = 13*abs(mean(Sforzo_direzione_carico));
+sm = abs(mean(Sforzo_direzione_carico));
 
 end
