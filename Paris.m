@@ -41,13 +41,13 @@ while N_cicli<10e6
         
         if (matrice_cricche(i,7) ~= 2 && matrice_cricche(i,7) ~= 3)
             
-            k = dK( matrice_cricche(i,5), 2*sigma(i)); % il Delta_sigma è assunto pari a 2 volte lo sforzo medio
+            k = dK( matrice_cricche(i,5), sigma(i)); % il Delta_sigma è assunto pari a 2 volte lo sforzo medio
             k_thresold = 0; %parametro locale - variabili a caso
             k1c = 1000; %parametro locale - variabili a caso
             
             if k > k_thresold  && k < k1c 
 
-                matrice_cricche(i,5) = matrice_cricche(i,5) + 10^-3 *C*k^m ; 
+                matrice_cricche(i,5) = matrice_cricche(i,5) + 10^-3*C*k^m; 
                 % incrementa lunghezza cricca
 
                 if  (matrice_cricche(i,5) >= matrice_cricche(i,6))

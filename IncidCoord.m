@@ -38,7 +38,7 @@ for L=1:N_pixel_z
                 % Se il voxel e' pieno
                 
                 cont=cont+1;                                                         % Conta il numero degli elementi finiti (voxel PIENI)
-                centroidi(n,:) = [i,j,L];                                                   
+                centroidi(cont,:) = [i,j,L];                                                   
                 % Conta il numero dei voxel pieni
                
                 nodoA=NodiLayer*(L-1)+(N_pixel_x+1)*(j-1)+(i+1);

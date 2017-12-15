@@ -14,7 +14,7 @@ sforzi = table2array(tab); %trasforma la tabella della FEM in matrice
 sforzi(:,1) = [];
 
 
-numero_cricche = 5; %numero cricche da collocare
+numero_cricche = 100; %numero cricche da collocare
 Cicli_iniziali = 0;
 
 mesh_iniziale = double(matrice_erosa_c); 
@@ -30,14 +30,20 @@ dim = size(mesh_iniziale,1);
 dim_voxel=  0.018*dati_ingresso(4); %dimensione del singolo voxel in millimetri
 porosita=size(incidenze,1)/dim^3; %frazione volumetrica della mesh
 E_mat = dati_ingresso(3); %modulo elastico in GPa
-sigma_tot = sum(sforzi(:,2))*E_mat*10^3; 
-sigma_sp =  sigma_tot * porosita; %sforzo di comparazione con lo sforzo sperimentale
-epsilon = dati_ingresso(2)/dim;
-E = [Cicli_iniziali sigma_sp/epsilon]; 
+sigma_tot = sum(sforzi(:,dati_ingresso(1)))*E_mat; 
+sigma_eq =  sigma_tot /dim^3; %sforzo di comparazione con lo sforzo sperimentale in GPa
+epsilon = dati_ingresso(2)/(dim*dim_voxel);
+E = [Cicli_iniziali abs(sigma_eq/epsilon)]; 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% dà errore, è da modificare quando utilizzeremo dati sperimentali.%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Parametri sperimentali
+E0 = 2.199; %modulo elastico espresso in GPa
+delta_sigma = -0.005*2.199; 
+epsilon_max = 0.01558; %da letteratura - media delle def max
+eq_inter = @(N) 0.230 + 1.015*porosita - 87.4*0.005 - 0.015*10^3*E0 + 0.111*log(N,10) + 0.247*epsilon_max; %equazione interpolante da letteratura
+%calcolo fattore alfa per ridimensionamento stato degli sforzi
+alfa = delta_sigma/sigma_eq;
+
+sforzi = sforzi*alfa;
 
 Rotate(dati_ingresso(1)); %porta le corrette rotazioni della matrice per allineare l'asse di carico con l'asse x 
 Sforzi4D(dati_ingresso(1)); 
@@ -74,14 +80,13 @@ end
 %%
 Rotate(dati_ingresso(1)); %ritraspone le matrici in modo da ritornare alla configurazione originale prima di rinviare la mesh alla FEM
 
-% save('giro1.mat','mesh_iniziale','matrice_cricche_modificata','Cicli_finali','incidenze');
-
 %% file inp per giro successivo
-[,,,centroidi]=IncidCoord; %%dove vengono salvati i file?
+[~,~,~,centroidi]=IncidCoord; %%dove vengono salvati i file?
+
+clear ;
+save('giro1.mat','mesh_iniziale','matrice_cricche_modificata','Cicli_finali','centroidi');
 
 %% GIRI SUCCESSIVI
-clear variables;
-dim_voxel=  0.032;
 load('giro1.mat');
 tab=readtable('k2n64.dat'); %carica la FEM relativa alla mesh di cui sopra
 sforzi = table2array(tab); %trasforma la tabella della FEM in matrice
