@@ -30,20 +30,17 @@ dim = size(mesh_iniziale,1);
 dim_voxel=  0.018*dati_ingresso(4); %dimensione del singolo voxel in millimetri
 porosita=size(incidenze,1)/dim^3; %frazione volumetrica della mesh
 E_mat = dati_ingresso(3); %modulo elastico in GPa
-sigma_tot = sum(sforzi(:,2))*E_mat*10^3; 
+sigma_tot = sum(sforzi(:,2))*E_mat; 
 sigma_sp =  sigma_tot * porosita; %sforzo di comparazione con lo sforzo sperimentale
 epsilon = dati_ingresso(2)/dim;
 E = [Cicli_iniziali sigma_sp/epsilon]; 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% dà errore, è da modificare quando utilizzeremo dati sperimentali.%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Rotate(dati_ingresso(1)); %porta le corrette rotazioni della matrice per allineare l'asse di carico con l'asse x 
 Sforzi4D(dati_ingresso(1)); 
 mesh_modificata = mesh_iniziale;
 Ricerca_bordi;
 matrice_cricche = Crea_cricche(numero_cricche);
+
 
 
 %% etichetta la trabecola con li cricche
@@ -77,7 +74,7 @@ Rotate(dati_ingresso(1)); %ritraspone le matrici in modo da ritornare alla confi
 % save('giro1.mat','mesh_iniziale','matrice_cricche_modificata','Cicli_finali','incidenze');
 
 %% file inp per giro successivo
-[,,,centroidi]=IncidCoord; %%dove vengono salvati i file?
+[~,~,~,centroidi]=IncidCoord; %%dove vengono salvati i file?
 
 %% GIRI SUCCESSIVI
 clear variables;
