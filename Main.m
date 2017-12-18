@@ -54,6 +54,7 @@ Ricerca_bordi;
 matrice_cricche = Crea_cricche(numero_cricche);
 
 
+
 %% etichetta la trabecola con li cricche
 k=unique(matrice_cricche(:,1));
 k=k';
