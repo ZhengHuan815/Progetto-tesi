@@ -34,6 +34,8 @@ for i=1:size(matrice_cricche,1)
         % della trabecola
     elseif matrice_cricche(i,7) == 1
         sigma(i) = Sforzo_medio(matrice_cricche(i,:),matrice_cricche(i,6)/dim_voxel);
+    else
+        sigma(i) = NaN;
     end
 end
 

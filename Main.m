@@ -107,7 +107,7 @@ for i = 1:numero_cricche
     plot(1:size(andamento,2),andamento(i,:));
 end
 xlabel('Numero di cicli');
-ylabel('lunghezza cricca');
+ylabel('lunghezza cricca[mm]');
 clear andamento;
 %% Optional 2
 andamento = sforzo_medio_giri;
