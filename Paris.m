@@ -1,4 +1,4 @@
-function [ matrice_cricche, N_cicli] = Paris( matrice_cricche,N_cicli )
+function [ matrice_cricche, N_cicli, sigma] = Paris( matrice_cricche,N_cicli )
 
 %Paris Produce l'aumento della lunghezza delle cricche secondo la legge di
 %      Paris. Si arresta quando una trabecola fallisce (cond 1 -> sforzo
@@ -19,16 +19,22 @@ function [ matrice_cricche, N_cicli] = Paris( matrice_cricche,N_cicli )
 %         interrotto il ciclo (trabecola inattivata o trabecola inattivata
 %         a meta')1
 
-global dim_voxel
+global dim_voxel andamento_cricche 
 
 dK = @(c,dsigma) (pi*c*10^-3)^(1/2) * dsigma*10^3; % funzione che descrive il fattore di intensificazione degli sforzi
 C = 0.013; %parametro del materiale
 m = 4.5; %parametro del materiale
 
-sigma=zeros(size(matrice_cricche,1));
+sigma=zeros(size(matrice_cricche,1),1);
 
 for i=1:size(matrice_cricche,1)
-    sigma(i) = Sforzo_medio(matrice_cricche(i,:),matrice_cricche(i,6)/(2*dim_voxel)); %l'area su cui si calcola lo sforzo medio e' la meta' dello spessore della trabecola
+    if matrice_cricche(i,7) == 0
+        sigma(i) = Sforzo_medio(matrice_cricche(i,:),matrice_cricche(i,6)/(2*dim_voxel));
+        % l'area su cui si calcola lo sforzo medio e' la meta' dello spessore
+        % della trabecola
+    elseif matrice_cricche(i,7) == 1
+        sigma(i) = Sforzo_medio(matrice_cricche(i,:),matrice_cricche(i,6)/dim_voxel);
+    end
 end
 
 while N_cicli<10e6
@@ -49,6 +55,11 @@ while N_cicli<10e6
 
                 matrice_cricche(i,5) = matrice_cricche(i,5) + 10^-3*C*k^m; 
                 % incrementa lunghezza cricca
+                
+                andamento_cricche(i,N_cicli+1) = matrice_cricche(i,5);
+                % aggiorna la matrice, N_cicli+1 perchè la prima colonna e'
+                % stato usato per la lunghezza iniziale, per cui e' tutto
+                % traslato di 1.
 
                 if  (matrice_cricche(i,5) >= matrice_cricche(i,6))
                     % condizione implicita && matrice_cricche(i,7)==1 - se 
@@ -100,14 +111,13 @@ while N_cicli<10e6
                     
                 end
             end
-        end
-        
-        if flag == 1
-            return
-        end
-        
+        else 
+            andamento_cricche(i,N_cicli+1) = andamento_cricche(i,N_cicli);
+        end        
     end
-    
+    if flag == 1
+        return
+    end  
 end
 end
 

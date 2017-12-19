@@ -1,20 +1,20 @@
 
-clear
+clear all
 clc
 
-global mesh_iniziale mesh_modificata sforzi incidenze SF dim_voxel dir_carico
+global mesh_iniziale mesh_modificata sforzi incidenze SF dim_voxel dir_carico andamento_cricche
 
 %% PRIMO GIRO
 
-load('k_2_n_200.mat'); %carica la mesh elaborata e compressa dal codice precedente
+load('k_2_n_64.mat'); %carica la mesh elaborata e compressa dal codice precedente
 incidenze = MATRICENOSTRA;
-tab=readtable('k2n200.dat'); %carica la FEM relativa alla mesh di cui sopra
+tab=readtable('k2n64_pulito.dat'); %carica la FEM relativa alla mesh di cui sopra
 %%%%%%% la Fem contiene righe in eccesso, si ricorda di ripulire. %%%%%%%
 sforzi = table2array(tab); %trasforma la tabella della FEM in matrice
 sforzi(:,1) = [];
 
 
-numero_cricche = 100; %numero cricche da collocare
+numero_cricche = 20; %numero cricche da collocare
 Cicli_iniziali = 0;
 
 mesh_iniziale = double(matrice_erosa_c); 
@@ -53,7 +53,15 @@ mesh_modificata = mesh_iniziale;
 Ricerca_bordi;
 matrice_cricche = Crea_cricche(numero_cricche);
 
+andamento_cricche = zeros(numero_cricche,10e5);
+for i = 1:size(matrice_cricche,1)
+    andamento_cricche(i,1) = matrice_cricche(i,4);  
+end
+% variabile che contiene tutte le lunghezze istantanee, serve per poi
+% graficare l'andamento della propagazione.
 
+sforzo_medio_giri = zeros(numero_cricche,20);
+% la variabile salva lo sforzo trovato e applicato, ad ogni giro, in Paris.
 %% etichetta la trabecola con li cricche
 k=unique(matrice_cricche(:,1));
 k=k';
@@ -72,8 +80,8 @@ for i=1:size(matrice_cricche,1)
 end
 
 %% propagazione cricche
-[matrice_cricche_modificata,Cicli_finali] = Paris (matrice_cricche,Cicli_iniziali);
-
+[matrice_cricche_modificata,Cicli_finali,sforzo_medio] = Paris (matrice_cricche,Cicli_iniziali);
+sforzo_medio_giri(:,1) = sforzo_medio; clear sforzo_medio;
 %% eliminazione totale o parziale trabecola
 for i=1:size(matrice_cricche_modificata,1)
     elimina_cerchio (matrice_cricche_modificata(i,:));
@@ -90,7 +98,32 @@ Cicli_iniziali=Cicli_finali;
 clear alfa Cicli_finali dati_ingresso i k incidenze mat matrice_compressa matrice_erosa_c MATRICENOSTRA mesh_modificata porosita SF sforzi sigma_eq sigma_tot tab x y z
 save('giro1.mat');
 
+%% Optional
+andamento = andamento_cricche;
+andamento( :, all(~andamento,1) ) = [];
+figure
+hold
+for i = 1:numero_cricche
+    plot(1:size(andamento,2),andamento(i,:));
+end
+xlabel('Numero di cicli');
+ylabel('lunghezza cricca');
+clear andamento;
+%% Optional 2
+andamento = sforzo_medio_giri;
+andamento( :, all(~andamento,1) ) = [];
+figure
+hold
+for i = 1:numero_cricche
+    plot(andamento(i,:));
+end
+xlabel('Numero di giri');
+ylabel('sforzo in valore assoluto');
+clear andamento;
 %% GIRI SUCCESSIVI
+N_giro = inputdlg({'numero giro attuale(minimo 2)'}); 
+N_giro = str2double(N_giro);
+% serve nella riga 146 per aggiornare la matrice sforzo_medio_giri.
 load('giro1.mat');
 tab=readtable('k2n64.dat'); %carica la FEM relativa alla mesh di cui sopra
 sforzi = table2array(tab); %trasforma la tabella della FEM in matrice
@@ -119,8 +152,8 @@ for i=1:size(matrice_cricche,1)
 end
 
 
-[matrice_cricche_modificata,Cicli_finali] = Paris (matrice_cricche,Cicli_iniziali);
-
+[matrice_cricche_modificata,Cicli_finali,sforzo_medio] = Paris (matrice_cricche,Cicli_iniziali);
+sforzo_medio_giri(:,N_giro) = sforzo_medio; clear sforzo_medio;
 for i=1:size(matrice_cricche_modificata,1)
     elimina_cerchio (matrice_cricche_modificata(i,:),dim_voxel);
 end
