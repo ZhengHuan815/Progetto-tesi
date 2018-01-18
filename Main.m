@@ -86,7 +86,8 @@ end
 
 disp('Propagazione cricche')
 [matrice_cricche_modificata,Cicli_finali,sforzo_medio] = Paris (matrice_cricche,Cicli_iniziali);
-sforzo_medio_giri(:,1) = sforzo_medio; clear sforzo_medio;
+sforzo_medio_giri(:,1) = sforzo_medio; 
+clear sforzo_medio;
 
 %% eliminazione totale o parziale trabecola
 disp('Eliminazione trabecole inattivate')
