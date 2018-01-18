@@ -13,8 +13,13 @@ Sforzo_direzione_carico=0;
 for y=yc-R:yc+R
     for z=zc-R:zc+R
         if y>0 && z>0 && y<=dim && z<=dim && mesh_iniziale(xc,y,z)==1    
+        
             k=k+1;
             Sforzo_direzione_carico = Sforzo_direzione_carico + SF(xc,y,z,dir_carico);
+<<<<<<< HEAD
+=======
+            
+>>>>>>> master
         end
     end
 end
