@@ -16,10 +16,7 @@ for y=yc-R:yc+R
         
             k=k+1;
             Sforzo_direzione_carico = Sforzo_direzione_carico + SF(xc,y,z,dir_carico);
-<<<<<<< HEAD
-=======
-            
->>>>>>> master
+
         end
     end
 end

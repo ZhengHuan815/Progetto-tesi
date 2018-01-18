@@ -2,11 +2,7 @@
 clear all
 clc
 
-<<<<<<< HEAD
 global mesh_iniziale mesh_modificata sforzi incidenze SF dim_voxel dir_carico andamento_cricche
-=======
-global mesh_iniziale mesh_modificata sforzi incidenze SF dim_voxel dir_carico
->>>>>>> master
 
 %% PRIMO GIRO
 disp('selezione file .mat contenente la mesh e le informazioni sulle incidenze')
@@ -87,14 +83,11 @@ for i=1:size(matrice_cricche,1)
 end
 
 %% propagazione cricche
-<<<<<<< HEAD
+
+disp('Propagazione cricche')
 [matrice_cricche_modificata,Cicli_finali,sforzo_medio] = Paris (matrice_cricche,Cicli_iniziali);
 sforzo_medio_giri(:,1) = sforzo_medio; clear sforzo_medio;
-=======
-disp('Propagazione cricche')
-[matrice_cricche_modificata,Cicli_finali] = Paris (matrice_cricche,Cicli_iniziali);
 
->>>>>>> master
 %% eliminazione totale o parziale trabecola
 disp('Eliminazione trabecole inattivate')
 for i=1:size(matrice_cricche_modificata,1)
@@ -105,12 +98,13 @@ end
 Rotate; %ritraspone le matrici in modo da ritornare alla configurazione originale prima di rinviare la mesh alla FEM
 
 %% file inp per giro successivo
-<<<<<<< HEAD
+disp('Generazione file .inp')
 [~,~,~,centroidi]=IncidCoord; 
+disp('Pronto per il giro successivo')
 GiroFEM = 1;
 par(GiroFEM) = alfa;
 Cicli_iniziali=Cicli_finali;
-clear alfa Cicli_finali dati_ingresso i k incidenze mat matrice_compressa matrice_erosa_c MATRICENOSTRA mesh_modificata porosita SF sforzi sigma_eq sigma_tot tab x y z
+clear alfa mesh FEM Cicli_finali dati_ingresso i k incidenze mat matrice_compressa matrice_erosa_c MATRICENOSTRA mesh_modificata porosita SF sforzi sigma_eq sigma_tot tab x y z
 save('giro1.mat');
 
 %% Optional
@@ -135,17 +129,7 @@ end
 xlabel('Numero di giri');
 ylabel('sforzo in valore assoluto');
 clear andamento;
-=======
-disp('Generazione file .inp')
-[~,~,~,centroidi]=IncidCoord; 
-disp('Pronto per il giro successivo')
-GiroFEM = 1;
-par(GiroFEM) = alfa;
-Cicli_iniziali=Cicli_finali;
-clear alfa mesh FEM Cicli_finali dati_ingresso i k incidenze mat matrice_compressa matrice_erosa_c MATRICENOSTRA mesh_modificata porosita SF sforzi sigma_eq sigma_tot tab x y z
-save('giro1.mat');
 
->>>>>>> master
 %% GIRI SUCCESSIVI
 N_giro = inputdlg({'numero giro attuale(minimo 2)'}); 
 N_giro = str2double(N_giro);
