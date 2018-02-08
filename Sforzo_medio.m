@@ -7,7 +7,7 @@ xc= riga_cricca(1);
 yc= riga_cricca(2);
 zc= riga_cricca(3);
 k=0;
-dim=size(mesh_iniziale,1);
+dim=size(mesh_modificata,1);
 Sforzo_direzione_carico=0;
 
 for y=yc-R:yc+R
