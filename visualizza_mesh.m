@@ -5,6 +5,33 @@
 clear
 clc
 global mesh_modificata
+%% visualizza la mesh 159*159
+load ('k2n318_giro0.mat')
+matrice_compressa = double(matrice_erosa_c);
+matrice_conversione = matrice_compressa;
+mesh_modificata = matrice_conversione;
+Ricerca_bordi
+for i = 1:159
+    for j = 1:159
+        for k = 1:159
+            if mesh_modificata(i,j,k) == 0
+                mesh_modificata(i,j,k) = NaN(1);
+            end
+        end
+    end
+end
+matrice_modificata_sezionata = NaN(159,159,159);
+gridx = (1:159);
+gridy = (1:159);
+gridz = (1:159);
+figure 
+v3d200 = PATCH_3Darray(mesh_modificata,gridx,gridy,gridz);
+%figure 1 mostra tutta la mesh
+matrice_modificata_sezionata(:,:,1:50) = mesh_modificata(:,:,1:50);
+cmap = jet(4);
+figure
+v3d200_sezione = PATCH_3Darray(matrice_modificata_sezionata, gridx, gridy, gridz,'col',cmap);
+%figure 2 mostra la mesh sezionata
 %% visualizza la mesh 30*30
 load ('k_2_n_64.mat')
 matrice_conversione = matrice_compressa;
@@ -52,29 +79,4 @@ v3d64_sezione_cricca = PATCH_3Darray(matrice_modificata_sezionata,gridx,gridy,gr
 % matrice_modificata_sezionata(19,29,4) = 2;
 % figure
 % v3d64_sezione_cricca = PATCH_3Darray(matrice_modificata_sezionata,gridx,gridy,gridz,'col',cmap);
-%% visualizza la mesh 99*99
-load ('k_2_n_200.mat')
 
-matrice_conversione = matrice_compressa;
-mesh_modificata = matrice_conversione;
-Ricerca_bordi
-for i = 1:99
-    for j = 1:99
-        for k = 1:99
-            if mesh_modificata(i,j,k) == 0
-                mesh_modificata(i,j,k) = NaN(1);
-            end
-        end
-    end
-end
-matrice_modificata_sezionata = NaN(99,99,99);
-gridx = (1:99);
-gridy = (1:99);
-gridz = (1:99);
-figure 
-v3d200 = PATCH_3Darray(mesh_modificata,gridx,gridy,gridz);
-
-matrice_modificata_sezionata(:,:,1:50) = mesh_modificata(:,:,1:50);
-cmap = jet(4);
-figure
-v3d200_sezione = PATCH_3Darray(matrice_modificata_sezionata, gridx, gridy, gridz,'col',cmap);
