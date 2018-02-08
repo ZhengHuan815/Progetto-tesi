@@ -39,7 +39,7 @@ sigma_eq =  sigma_tot /dim^3; %sforzo di comparazione con lo sforzo sperimentale
 epsilon = dati_ingresso(2)/(dim*dim_voxel);
 E = [E; Cicli_iniziali abs(sigma_eq/epsilon)];
 
-numero_cricche = 0.33*dim*(dim_voxel*dim)^2 ; %numero cricche da collocare
+numero_cricche = round(0.33*dim*(dim_voxel*dim)^2) ; %numero cricche da collocare
 
 %Parametri sperimentali
 E0 = 2.199; %modulo elastico espresso in GPa
