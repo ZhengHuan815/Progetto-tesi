@@ -17,7 +17,6 @@ sforzi = table2array(tab); %trasforma la tabella della FEM in matrice
 sforzi(:,1) = [];
 
 
-numero_cricche = 20; %numero cricche da collocare
 Cicli_iniziali = 0;
 
 mesh_iniziale = double(matrice_erosa_c); 
@@ -39,6 +38,8 @@ sigma_tot = sum(sforzi(:,dir_carico));
 sigma_eq =  sigma_tot /dim^3; %sforzo di comparazione con lo sforzo sperimentale in GPa
 epsilon = dati_ingresso(2)/(dim*dim_voxel);
 E = [E; Cicli_iniziali abs(sigma_eq/epsilon)];
+
+numero_cricche = 0.33*dim*(dim_voxel*dim)^2 ; %numero cricche da collocare
 
 %Parametri sperimentali
 E0 = 2.199; %modulo elastico espresso in GPa
