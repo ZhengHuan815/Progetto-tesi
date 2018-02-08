@@ -32,19 +32,19 @@ dati_ingresso = str2double(dati_ingresso);
 dim = size(mesh_iniziale,1);
 dir_carico = dati_ingresso(1);
 dim_voxel=  0.018*dati_ingresso(4); %dimensione del singolo voxel in millimetri
-porosita= size(incidenze,1)/dim^3; %frazione volumetrica della mesh
+porosita= 1 - size(incidenze,1)/dim^3; %frazione volumetrica della mesh
 E_mat = dati_ingresso(3); %modulo elastico in GPa
 sforzi = sforzi*E_mat;
 sigma_tot = sum(sforzi(:,dir_carico)); 
 sigma_eq =  sigma_tot /dim^3; %sforzo di comparazione con lo sforzo sperimentale in GPa
 epsilon = dati_ingresso(2)/(dim*dim_voxel);
-E = [Cicli_iniziali abs(sigma_eq/epsilon)];
+E = [E; Cicli_iniziali abs(sigma_eq/epsilon)];
 
 %Parametri sperimentali
 E0 = 2.199; %modulo elastico espresso in GPa
 delta_sigma = -0.005*E0; 
 epsilon_max = 0.01558; %da letteratura - media delle def max
-eq_inter = @(N) 0.230 + 1.015*porosita - 87.4*0.005 - 0.015*10^3*E0 + 0.111*log(N,10) + 0.247*epsilon_max; %equazione interpolante da letteratura
+eq_inter = @(N) 0.230 + 1.015*porosita - 87.4*0.005 - 0.015*E0 + 0.111*log10(N) + 0.247*epsilon_max; %equazione interpolante da letteratura
 %calcolo fattore alfa per ridimensionamento stato degli sforzi
 alfa = delta_sigma/sigma_eq;
 
