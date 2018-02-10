@@ -12,7 +12,7 @@ Sforzo_direzione_carico=0;
 
 for y=yc-R:yc+R
     for z=zc-R:zc+R
-        if y>0 && z>0 && y<=dim && z<=dim && mesh_modificata(xc,y,z)==mesh_modificata(xc,yc,zc)    
+        if y>0 && z>0 && y<=dim && z<=dim && mesh_modificata(xc,y,z)==riga_cricca(8)    
         
             k=k+1;
             Sforzo_direzione_carico = Sforzo_direzione_carico + SF(xc,y,z,dir_carico);

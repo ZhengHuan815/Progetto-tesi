@@ -37,7 +37,7 @@ while i <= n_cricche && n < nmax
     if mesh_modificata(x,y,z) == 2
         
         l_0 = genera_lunghezze_iniziali;
-        matrice_cricche(i,:) = [x y z l_0 l_0 0 0];
+        matrice_cricche(i,:) = [x y z l_0 l_0 0 0 0];
         mesh_modificata(x,y,z) = 3;
         i = i + 1;
         

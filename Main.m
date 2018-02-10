@@ -1,5 +1,5 @@
 
-clear all
+clear
 clc
 
 global mesh_iniziale mesh_modificata sforzi incidenze SF dim_voxel dir_carico andamento_cricche
@@ -39,7 +39,7 @@ sigma_eq =  sigma_tot /dim^3; %sforzo di comparazione con lo sforzo sperimentale
 epsilon = dati_ingresso(2)/(dim*dim_voxel);
 E = [E; Cicli_iniziali abs(sigma_eq/epsilon)];
 
-numero_cricche = round(0.33*dim*(dim_voxel*dim)^2) ; %numero cricche da collocare
+numero_cricche = round(0.033*dim*(dim_voxel*dim)^2) ; %numero cricche da collocare
 
 %Parametri sperimentali
 E0 = 2.199; %modulo elastico espresso in GPa
@@ -74,6 +74,8 @@ for i=k
     mesh_modificata(i,:,:) = bwlabel(mat);
 end
 
+M0=mesh_iniziale; %si salva la matrice iniziale
+
 %% calcola lo spessore della trabecola delle cricche e aggiorna matrice_cricche
 for i=1:size(matrice_cricche,1)
     
@@ -81,23 +83,32 @@ for i=1:size(matrice_cricche,1)
     y = matrice_cricche(i,2);
     z = matrice_cricche(i,3);
     matrice_cricche(i,6) = dim_voxel*Spessore(matrice_cricche(i,:),mesh_modificata(x,y,z));
+    matrice_cricche(i,8) = mesh_modificata(x,y,z);
 end
 
 %% propagazione cricche
 
 disp('Propagazione cricche')
 [matrice_cricche_modificata,Cicli_finali,sforzo_medio] = Paris (matrice_cricche,Cicli_iniziali);
-sforzo_medio_giri(:,1) = sforzo_medio; 
+sforzo_medio_giri(:,2) = sforzo_medio; 
 clear sforzo_medio;
 
 %% eliminazione totale o parziale trabecola
 disp('Eliminazione trabecole inattivate')
 for i=1:size(matrice_cricche_modificata,1)
-    elimina_cerchio (matrice_cricche_modificata(i,:));
+    elimina_cerchio(matrice_cricche_modificata(i,:));
 end
 
-%%
 Rotate; %ritraspone le matrici in modo da ritornare alla configurazione originale prima di rinviare la mesh alla FEM
+
+% if dir_carico==2
+%     matrice_cricche_modificata(:,1) = matrice_cricche(:,2);
+%     matrice_cricche_modificata(:,2) = matrice_cricche(:,1);
+%     
+% elseif dir_carico==3
+%     matrice_cricche_modificata(:,1) = matrice_cricche(:,3);
+%     matrice_cricche_modificata(:,3) = matrice_cricche(:,1);
+% end 
 
 %% file inp per giro successivo
 disp('Generazione file .inp')
@@ -151,17 +162,22 @@ Applica_cricche(matrice_cricche);
 k=unique(matrice_cricche(:,1));
 k=k';
 for i=k
-    mt(:,:) = mesh_modificata(i,:,:);
-    mesh_modificata(i,:,:) = bwlabel(mt);
+    for j=1:dim
+        for z=1:dim
+            if mesh_iniziale(i,j,z) == 1
+                mesh_modificata(i,j,z) = M0(i,j,z);
+            end
+        end
+    end
 end
 
-for i=1:size(matrice_cricche,1)
-    
-    x = matrice_cricche(i,1);
-    y = matrice_cricche(i,2);
-    z = matrice_cricche(i,3);
-    matrice_cricche(i,6) = dim_voxel*Spessore(matrice_cricche(i,:),mesh_modificata(x,y,z));
-end
+% for i=1:size(matrice_cricche,1)
+%     
+%     x = matrice_cricche(i,1);
+%     y = matrice_cricche(i,2);
+%     z = matrice_cricche(i,3);
+%     matrice_cricche(i,6) = dim_voxel*Spessore(matrice_cricche(i,:),mesh_modificata(x,y,z));
+% end
 
 
 [matrice_cricche_modificata,Cicli_finali,sforzo_medio] = Paris (matrice_cricche,Cicli_iniziali);
