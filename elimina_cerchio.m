@@ -16,7 +16,7 @@ for j = floor(riga_cricca(2)-(l_voxel)):ceil(riga_cricca(2)+(l_voxel))
         if j>0 && j<=dim(2) && k>0 && k<=dim(3) 
             % per non uscire dalla mesh
             if hypot((riga_cricca(2)-j),(riga_cricca(3)-k)) <= l_voxel && ...
-                    mesh_modificata(xc,riga_cricca(2),riga_cricca(3)) == mesh_modificata(xc,j,k)
+                    riga_cricca(8) == mesh_modificata(xc,j,k)
         
                 % distanza con pitagora e condizione che verifica che il
                 % punto in analisi appartenga alla trabecola della cricca

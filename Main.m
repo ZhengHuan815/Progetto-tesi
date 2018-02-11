@@ -1,5 +1,5 @@
 
-clear
+clear all
 clc
 
 global mesh_iniziale mesh_modificata sforzi incidenze SF dim_voxel dir_carico andamento_cricche
@@ -16,10 +16,9 @@ tab=readtable(FEM); %carica la FEM relativa alla mesh di cui sopra
 sforzi = table2array(tab); %trasforma la tabella della FEM in matrice
 sforzi(:,1) = [];
 
-
 Cicli_iniziali = 0;
 
-mesh_iniziale = double(matrice_erosa_c); 
+mesh_iniziale = double(matrice_compressa); 
 
 
 %% calcolo parametri macro e richiesta informazioni su input FEM e mesh
@@ -37,7 +36,7 @@ sforzi = sforzi*E_mat;
 sigma_tot = sum(sforzi(:,dir_carico)); 
 sigma_eq =  sigma_tot /dim^3; %sforzo di comparazione con lo sforzo sperimentale in GPa
 epsilon = dati_ingresso(2)/(dim*dim_voxel);
-E = [E; Cicli_iniziali abs(sigma_eq/epsilon)];
+E = [Cicli_iniziali abs(sigma_eq/epsilon)];
 
 numero_cricche = round(0.033*dim*(dim_voxel*dim)^2) ; %numero cricche da collocare
 
@@ -51,7 +50,7 @@ alfa = delta_sigma/sigma_eq;
 
 sforzi = sforzi*alfa;
 
-Rotate; %porta le corrette rotazioni della matrice per allineare l'asse di carico con l'asse x 
+mesh_iniziale=Rotate(mesh_iniziale); %porta le corrette rotazioni della matrice per allineare l'asse di carico con l'asse x 
 Sforzi4D; 
 mesh_modificata = mesh_iniziale;
 Ricerca_bordi;
@@ -74,7 +73,7 @@ for i=k
     mesh_modificata(i,:,:) = bwlabel(mat);
 end
 
-M0=mesh_iniziale; %si salva la matrice iniziale
+M0=mesh_modificata; %si salva la matrice iniziale
 
 %% calcola lo spessore della trabecola delle cricche e aggiorna matrice_cricche
 for i=1:size(matrice_cricche,1)
@@ -99,7 +98,7 @@ for i=1:size(matrice_cricche_modificata,1)
     elimina_cerchio(matrice_cricche_modificata(i,:));
 end
 
-Rotate; %ritraspone le matrici in modo da ritornare alla configurazione originale prima di rinviare la mesh alla FEM
+mesh_iniziale=Rotate(mesh_iniziale); %ritraspone le matrici in modo da ritornare alla configurazione originale prima di rinviare la mesh alla FEM
 
 % if dir_carico==2
 %     matrice_cricche_modificata(:,1) = matrice_cricche(:,2);
@@ -111,14 +110,22 @@ Rotate; %ritraspone le matrici in modo da ritornare alla configurazione original
 % end 
 
 %% file inp per giro successivo
+
+disp('Eliminazione delle isole della matrice compressa')
+CC_c = bwconncomp(mesh_iniziale,6);                                            
+numPixel_c = cellfun(@numel, CC_c.PixelIdxList);                    
+[biggest_c,idx_2]=max(numPixel_c);                                   
+biggest_c = biggest_c-1;                              
+mesh_iniziale = bwareaopen(mesh_iniziale, biggest_c, 6); 
+
+
 disp('Generazione file .inp')
-[~,~,~,centroidi]=IncidCoord; 
+[~,~,~,incidenze]=IncidCoord; 
 disp('Pronto per il giro successivo')
-GiroFEM = 1;
-par(GiroFEM) = alfa;
 Cicli_iniziali=Cicli_finali;
-clear alfa mesh FEM Cicli_finali dati_ingresso i k incidenze mat matrice_compressa matrice_erosa_c MATRICENOSTRA mesh_modificata porosita SF sforzi sigma_eq sigma_tot tab x y z
-save('giro1.mat');
+matrice_cricche=matrice_cricche_modificata;
+save('mesh.mat','mesh_iniziale','M0','incidenze');
+save('info.mat','E','Cicli_iniziali','E_mat','dir_carico','dim_voxel','matrice_cricche','numero_cricche');
 
 %% Optional
 andamento = andamento_cricche;
@@ -144,20 +151,48 @@ ylabel('sforzo in valore assoluto');
 clear andamento;
 
 %% GIRI SUCCESSIVI
-N_giro = inputdlg({'numero giro attuale(minimo 2)'}); 
-N_giro = str2double(N_giro);
-% serve nella riga 146 per aggiornare la matrice sforzo_medio_giri.
-load('giro1.mat');
-tab=readtable('k2n64.dat'); %carica la FEM relativa alla mesh di cui sopra
+
+disp('selezione file .mat contenente la mesh e le informazioni sulle incidenze')
+mesh = uigetfile;
+load(mesh); %carica la mesh elaborata e compressa dal codice precedente (contiene M0
+FEM = uigetfile;
+disp('selezionare file .dat contenente la FEM relativo alla mesh già selezionata')
+tab=readtable(FEM); %carica la FEM relativa alla mesh di cui sopra
+%%%%%%% la Fem contiene righe in eccesso, si ricorda di ripulire. %%%%%%%
 sforzi = table2array(tab); %trasforma la tabella della FEM in matrice
 sforzi(:,1) = [];
+disp('selezionare file .mat contenente le informazioni sui giri precedenti')
+info = uigetfile; %info deve contenere: Numero cicli, vettore E, dir carico, numero cricche, E_mat, matrice_cricche, fatt_compr, porosità
+load(info);
 
-mesh_iniziale = mat; 
-mesh_modificata = Ricerca_bordi(mesh_iniziale);
-matrice_cricche = matrice_cricche_modificata;
-Cicli_iniziali=Cicli_finali;
-Applica_cricche(matrice_cricche);
+dlg = inputdlg({'spostamento applicato (espresso in mm)','N_giro'},...
+              'Parametri FEM'); 
+dlg = str2double(dlg);
+%converte cell in double, altrimenti non si puo' usare la sintassi x(4).
+     
+dim = size(mesh_iniziale,1);
+porosita= 1 - size(incidenze,1)/dim^3; %frazione volumetrica della mesh
+sforzi = sforzi*E_mat;
+sigma_tot = sum(sforzi(:,dir_carico)); 
+sigma_eq =  sigma_tot /dim^3; %sforzo di comparazione con lo sforzo sperimentale in GPa
+epsilon = dlg(1)/(dim*dim_voxel);
+E = [E; Cicli_iniziali abs(sigma_eq/epsilon)];
 
+andamento_cricche = zeros(numero_cricche,10e5);
+
+%Parametri sperimentali
+E0 = 2.199; %modulo elastico espresso in GPa
+delta_sigma = -0.005*E0; 
+epsilon_max = 0.01558; %da letteratura - media delle def max
+eq_inter = @(N) 0.230 + 1.015*porosita - 87.4*0.005 - 0.015*E0 + 0.111*log10(N) + 0.247*epsilon_max; %equazione interpolante da letteratura
+%calcolo fattore alfa per ridimensionamento stato degli sforzi
+alfa = delta_sigma/sigma_eq;
+
+sforzi = sforzi*alfa;
+
+mesh_iniziale=Rotate(mesh_iniziale); %porta le corrette rotazioni della matrice per allineare l'asse di carico con l'asse x 
+Sforzi4D; 
+mesh_modificata = mesh_iniziale;
 
 k=unique(matrice_cricche(:,1));
 k=k';
@@ -171,20 +206,29 @@ for i=k
     end
 end
 
-% for i=1:size(matrice_cricche,1)
-%     
-%     x = matrice_cricche(i,1);
-%     y = matrice_cricche(i,2);
-%     z = matrice_cricche(i,3);
-%     matrice_cricche(i,6) = dim_voxel*Spessore(matrice_cricche(i,:),mesh_modificata(x,y,z));
-% end
-
-
 [matrice_cricche_modificata,Cicli_finali,sforzo_medio] = Paris (matrice_cricche,Cicli_iniziali);
-sforzo_medio_giri(:,N_giro) = sforzo_medio; clear sforzo_medio;
+%sforzo_medio_giri(:,dlg(2)) = sforzo_medio; clear sforzo_medio;
+
 for i=1:size(matrice_cricche_modificata,1)
-    elimina_cerchio (matrice_cricche_modificata(i,:),dim_voxel);
+    elimina_cerchio (matrice_cricche_modificata(i,:));
 end
-mat=mesh_iniziale;
-save('giro2.mat','mat','matrice_cricche_modificata','Cicli_finali','incidenze');
+
+mesh_iniziale=Rotate(mesh_iniziale);
+
+disp('Eliminazione delle isole della matrice compressa')
+CC_c = bwconncomp(mesh_iniziale,6);                                            
+numPixel_c = cellfun(@numel, CC_c.PixelIdxList);                    
+[biggest_c,idx_2]=max(numPixel_c);                                   
+biggest_c = biggest_c-1;                              
+mesh_iniziale = bwareaopen(mesh_iniziale, biggest_c, 6); 
+
+disp('Generazione file .inp')
+[~,~,~,incidenze]=IncidCoord; 
+disp('Pronto per il giro successivo')
+Cicli_iniziali=Cicli_finali;
+matrice_cricche=matrice_cricche_modificata;
+
+
+save('mesh.mat','mesh_iniziale','M0','incidenze');
+save('info.mat','E','Cicli_iniziali','E_mat','dir_carico','dim_voxel','matrice_cricche','dir_carico','numero_cricche');
 

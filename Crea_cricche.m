@@ -26,7 +26,7 @@ i=1;
 n=0;
 dim_mesh= size(mesh_modificata);
 nmax=dim_mesh(1)*dim_mesh(2)*dim_mesh(3);
-matrice_cricche=zeros(n_cricche-1,7);
+matrice_cricche=zeros(n_cricche-1,8);
 
 while i <= n_cricche && n < nmax
     
