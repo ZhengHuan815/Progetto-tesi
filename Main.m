@@ -18,7 +18,7 @@ sforzi(:,1) = [];
 
 Cicli_iniziali = 0;
 
-mesh_iniziale = double(matrice_compressa); 
+mesh_iniziale = double(matrice_erosa_c); 
 
 
 %% calcolo parametri macro e richiesta informazioni su input FEM e mesh
@@ -37,7 +37,7 @@ sigma_tot = sum(sforzi(:,dir_carico));
 sigma_eq =  sigma_tot /dim^3; %sforzo di comparazione con lo sforzo sperimentale in GPa
 epsilon = dati_ingresso(2)/(dim*dim_voxel);
 E = [Cicli_iniziali abs(sigma_eq/epsilon)];
-
+P = [Cicli_iniziali porosita];
 numero_cricche = round(0.033*dim*(dim_voxel*dim)^2) ; %numero cricche da collocare
 
 %Parametri sperimentali
@@ -73,7 +73,7 @@ for i=k
     mesh_modificata(i,:,:) = bwlabel(mat);
 end
 
-M0=mesh_modificata; %si salva la matrice iniziale
+M0=mesh_modificata; %si salva la matrice etichettata
 
 %% calcola lo spessore della trabecola delle cricche e aggiorna matrice_cricche
 for i=1:size(matrice_cricche,1)
@@ -89,7 +89,7 @@ end
 
 disp('Propagazione cricche')
 [matrice_cricche_modificata,Cicli_finali,sforzo_medio] = Paris (matrice_cricche,Cicli_iniziali);
-sforzo_medio_giri(:,2) = sforzo_medio; 
+sforzo_medio_giri(:,1) = sforzo_medio; 
 clear sforzo_medio;
 
 %% eliminazione totale o parziale trabecola
@@ -125,7 +125,7 @@ disp('Pronto per il giro successivo')
 Cicli_iniziali=Cicli_finali;
 matrice_cricche=matrice_cricche_modificata;
 save('mesh.mat','mesh_iniziale','M0','incidenze');
-save('info.mat','E','Cicli_iniziali','E_mat','dir_carico','dim_voxel','matrice_cricche','numero_cricche');
+save('info.mat','E','Cicli_iniziali','E_mat','dir_carico','dim_voxel','matrice_cricche','numero_cricche','andamento_cricche','P','sforzo_medio_giri');
 
 %% Optional
 andamento = andamento_cricche;
@@ -177,8 +177,8 @@ sigma_tot = sum(sforzi(:,dir_carico));
 sigma_eq =  sigma_tot /dim^3; %sforzo di comparazione con lo sforzo sperimentale in GPa
 epsilon = dlg(1)/(dim*dim_voxel);
 E = [E; Cicli_iniziali abs(sigma_eq/epsilon)];
+P = [P; Cicli_iniziali porosita];
 
-andamento_cricche = zeros(numero_cricche,10e5);
 
 %Parametri sperimentali
 E0 = 2.199; %modulo elastico espresso in GPa
@@ -207,7 +207,7 @@ for i=k
 end
 
 [matrice_cricche_modificata,Cicli_finali,sforzo_medio] = Paris (matrice_cricche,Cicli_iniziali);
-%sforzo_medio_giri(:,dlg(2)) = sforzo_medio; clear sforzo_medio;
+sforzo_medio_giri(:,dlg(2)) = sforzo_medio; clear sforzo_medio;
 
 for i=1:size(matrice_cricche_modificata,1)
     elimina_cerchio (matrice_cricche_modificata(i,:));
@@ -221,6 +221,7 @@ numPixel_c = cellfun(@numel, CC_c.PixelIdxList);
 [biggest_c,idx_2]=max(numPixel_c);                                   
 biggest_c = biggest_c-1;                              
 mesh_iniziale = bwareaopen(mesh_iniziale, biggest_c, 6); 
+mesh_iniziale = double(mesh_iniziale);
 
 disp('Generazione file .inp')
 [~,~,~,incidenze]=IncidCoord; 
@@ -230,5 +231,5 @@ matrice_cricche=matrice_cricche_modificata;
 
 
 save('mesh.mat','mesh_iniziale','M0','incidenze');
-save('info.mat','E','Cicli_iniziali','E_mat','dir_carico','dim_voxel','matrice_cricche','dir_carico','numero_cricche');
+save('info.mat','E','Cicli_iniziali','E_mat','dir_carico','dim_voxel','matrice_cricche','numero_cricche','andamento_cricche','P','sforzo_medio_giri');
 
