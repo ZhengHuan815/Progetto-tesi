@@ -1,0 +1,27 @@
+ISTRUZIONI PER ESEGUIRE CORRETTAMENTE PRIMO GIRO
+
+1. Dal codice vecchio ("GeneraDescrittoriOssoBovino"), ricavare la mesh con dimensioni e fattore di compressione desiderato.
+	1.1 Salvare da quel codice "matrice_erosa_c" e "MATRICENOSTRA" (da automatizzare)
+2. A partire dai descrittori generati dal codice vecchio, ricavare la FEM tramite Abaqus
+3. Fare Run section della sezione di dichiarazione delle variabili globali
+4. Fare Run section della sezione PRIMO GIRO
+	4.1 aprire il file .mat di cui al punto 1.1
+	4.2 aprire il file .dat ricavato dalla FEM
+	4.3 attendere che il codice finisca
+	4.4 vengono salvati: 4.4.1 i descrittori della mesh mangiata, sotto il nome "Descrittori_Bovine_k_2"
+			     4.4.2 la mesh, le incidenze e la matrice M0 sotto il nome mesh.mat
+			     4.4.3 i dati logici e fisici sotto il nome info.mat
+5. Rinominare i file di cui al punto 4.4 secondo criteri di leggibilità 
+
+ISTRUZIONI PER ESEGUIRE GIRI SUCCESSIVI
+1. A partire dai descrittori generati dal giro precedente del codice, ricavare la FEM tramite Abaqus
+2. Fare Run section della sezione di dichiarazione delle variabili globali
+3. Fare Run section della sezione GIRI SUCCESSIVI
+	3.1 aprire il file .mat di cui al punto 4.4.2 (sez. PRIMO GIRO)
+	3.2 aprire il file .dat ricavato dalla FEM di cui al punto 4.4.1 (sez PRIMO GIRO)
+	3.3 aprire il file .mat di cui al punto 4.4.3 (sez PRIMO GIRO)
+	3.4 attendere che il codice finisca
+	3.5 vengono salvati: 3.5.1 i descrittori della mesh mangiata, sotto il nome "Descrittori_Bovine_k_2"
+			     3.5.2 la mesh, le incidenze e la matrice M0 sotto il nome mesh.mat
+			     3.5.3 i dati logici e fisici sotto il nome info.mat
+4. Rinominare i file di cui al punto 3.5 secondo criteri di leggibilità 
