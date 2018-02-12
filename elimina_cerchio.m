@@ -12,7 +12,7 @@ l_voxel = riga_cricca(5)/dim_voxel;
 xc = riga_cricca(1);
 
 for j = floor(riga_cricca(2)-(l_voxel)):ceil(riga_cricca(2)+(l_voxel))
-    for k = floor(riga_cricca(3)-(l_voxel/2)):ceil(riga_cricca(3)+(l_voxel/2))
+    for k = floor(riga_cricca(3)-(l_voxel)):ceil(riga_cricca(3)+(l_voxel))
         if j>0 && j<=dim(2) && k>0 && k<=dim(3) 
             % per non uscire dalla mesh
             if hypot((riga_cricca(2)-j),(riga_cricca(3)-k)) <= l_voxel && ...

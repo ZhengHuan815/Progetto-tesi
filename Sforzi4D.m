@@ -1,7 +1,7 @@
 function Sforzi4D
 
-global mesh_modificata SF sforzi incidenze dir_carico
-dim = size(mesh_modificata,1);
+global mesh_iniziale SF sforzi incidenze dir_carico
+dim = size(mesh_iniziale,1);
 SF = zeros(dim,dim,dim,6);
 
 for i=1:size(incidenze,1)

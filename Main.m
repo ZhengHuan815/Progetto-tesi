@@ -20,8 +20,7 @@ Cicli_iniziali = 0;
 
 mesh_iniziale = double(matrice_erosa_c); 
 
-
-%% calcolo parametri macro e richiesta informazioni su input FEM e mesh
+% calcolo parametri macro e richiesta informazioni su input FEM e mesh
 dati_ingresso = inputdlg({'Direzione applicazione carico (x=1,y=2,z=3)','spostamento applicato (espresso in mm)','Modulo elastico materiale - in GPa','Fattore di compressione (2, 3 o 6)'},...
               'Parametri FEM e MESH'); 
 dati_ingresso = str2double(dati_ingresso);
@@ -65,7 +64,8 @@ end
 
 sforzo_medio_giri = zeros(numero_cricche,20);
 % la variabile salva lo sforzo trovato e applicato, ad ogni giro, in Paris.
-%% etichetta la trabecola con li cricche
+
+% etichetta la trabecola con le cricche
 k=unique(matrice_cricche(:,1));
 k=k';
 for i=k
@@ -75,7 +75,7 @@ end
 
 M0=mesh_modificata; %si salva la matrice etichettata
 
-%% calcola lo spessore della trabecola delle cricche e aggiorna matrice_cricche
+% calcola lo spessore della trabecola delle cricche e aggiorna matrice_cricche
 for i=1:size(matrice_cricche,1)
     
     x = matrice_cricche(i,1);
@@ -85,20 +85,20 @@ for i=1:size(matrice_cricche,1)
     matrice_cricche(i,8) = mesh_modificata(x,y,z);
 end
 
-%% propagazione cricche
+% propagazione cricche
 
 disp('Propagazione cricche')
 [matrice_cricche_modificata,Cicli_finali,sforzo_medio] = Paris (matrice_cricche,Cicli_iniziali);
 sforzo_medio_giri(:,1) = sforzo_medio; 
 clear sforzo_medio;
 
-%% eliminazione totale o parziale trabecola
+% eliminazione totale o parziale trabecola
 disp('Eliminazione trabecole inattivate')
 for i=1:size(matrice_cricche_modificata,1)
     elimina_cerchio(matrice_cricche_modificata(i,:));
 end
 
-mesh_iniziale=Rotate(mesh_iniziale); %ritraspone le matrici in modo da ritornare alla configurazione originale prima di rinviare la mesh alla FEM
+mesh_iniziale=Reverse(mesh_iniziale); %ritraspone le matrici in modo da ritornare alla configurazione originale prima di rinviare la mesh alla FEM
 
 % if dir_carico==2
 %     matrice_cricche_modificata(:,1) = matrice_cricche(:,2);
@@ -109,7 +109,7 @@ mesh_iniziale=Rotate(mesh_iniziale); %ritraspone le matrici in modo da ritornare
 %     matrice_cricche_modificata(:,3) = matrice_cricche(:,1);
 % end 
 
-%% file inp per giro successivo
+% file inp per giro successivo
 
 disp('Eliminazione delle isole della matrice compressa')
 CC_c = bwconncomp(mesh_iniziale,6);                                            
@@ -117,13 +117,14 @@ numPixel_c = cellfun(@numel, CC_c.PixelIdxList);
 [biggest_c,idx_2]=max(numPixel_c);                                   
 biggest_c = biggest_c-1;                              
 mesh_iniziale = bwareaopen(mesh_iniziale, biggest_c, 6); 
-
+mesh_iniziale = double(mesh_iniziale);
 
 disp('Generazione file .inp')
 [~,~,~,incidenze]=IncidCoord; 
 disp('Pronto per il giro successivo')
 Cicli_iniziali=Cicli_finali;
 matrice_cricche=matrice_cricche_modificata;
+
 save('mesh.mat','mesh_iniziale','M0','incidenze');
 save('info.mat','E','Cicli_iniziali','E_mat','dir_carico','dim_voxel','matrice_cricche','numero_cricche','andamento_cricche','P','sforzo_medio_giri');
 
@@ -213,7 +214,7 @@ for i=1:size(matrice_cricche_modificata,1)
     elimina_cerchio (matrice_cricche_modificata(i,:));
 end
 
-mesh_iniziale=Rotate(mesh_iniziale);
+mesh_iniziale=Reverse(mesh_iniziale);
 
 disp('Eliminazione delle isole della matrice compressa')
 CC_c = bwconncomp(mesh_iniziale,6);                                            
