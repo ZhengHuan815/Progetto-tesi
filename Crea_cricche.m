@@ -26,7 +26,7 @@ i=1;
 n=0;
 dim_mesh= size(mesh_modificata);
 nmax=dim_mesh(1)*dim_mesh(2)*dim_mesh(3);
-matrice_cricche=zeros(n_cricche-1,7);
+matrice_cricche=zeros(n_cricche-1,8);
 
 while i <= n_cricche && n < nmax
     
@@ -37,7 +37,7 @@ while i <= n_cricche && n < nmax
     if mesh_modificata(x,y,z) == 2
         
         l_0 = genera_lunghezze_iniziali;
-        matrice_cricche(i,:) = [x y z l_0 l_0 0 0];
+        matrice_cricche(i,:) = [x y z l_0 l_0 0 0 0];
         mesh_modificata(x,y,z) = 3;
         i = i + 1;
         

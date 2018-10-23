@@ -20,7 +20,7 @@ function [ matrice_cricche, N_cicli, sigma] = Paris( matrice_cricche,N_cicli )
 %         a meta')1
 
 global dim_voxel andamento_cricche 
-
+N0 = N_cicli;
 dK = @(c,dsigma) (pi*c*10^-3)^(1/2) * dsigma*10^3; % funzione che descrive il fattore di intensificazione degli sforzi
 C = 0.013; %parametro del materiale
 m = 4.5; %parametro del materiale
@@ -35,11 +35,11 @@ for i=1:size(matrice_cricche,1)
     elseif matrice_cricche(i,7) == 1
         sigma(i) = Sforzo_medio(matrice_cricche(i,:),matrice_cricche(i,6)/dim_voxel);
     else
-        sigma(i) = NaN;
+        sigma(i) = 0;
     end
 end
 
-while N_cicli<10e6
+while N_cicli<10e6 && N_cicli-N0<2000
     
     flag=0;
     
